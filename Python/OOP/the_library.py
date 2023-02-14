@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 class Book:
     checked_out = False
 
@@ -7,21 +9,17 @@ class Book:
         self.year_of_release = year_of_release
 
 class Library:
-    books = {}
-    members = {}
+    books: Dict[int, Book] = {}
+    members: Dict[str, List[int]] = {}
+    _new_book_index = 1
 
     def __init__(self, name = "New Library") -> None:
         self.library_name = name
 
     def add_book(self, book: Book) -> None:
-        # try:
-        keys = self.books
-        keys = list(keys)
-        i = max(keys)+1
-        self.books[i] = book
-        # except TypeError:
-        #     self.books[1] = book
-
+        self.books[self._new_book_index] = book
+        self._new_book_index += 1
+    
     def add_member(self, name: str) -> None:
         self.members[name] = []
 
@@ -32,15 +30,21 @@ class Library:
             return True
         return False
 
+    def return_book(self, book_id: int) -> bool:
+        if self.books[book_id].checked_out is True:
+            for user, book_ids in self.members:
+                if book_id in book_ids:
+                    self.members[user][book_ids.find(book_id)]
 
-library1 = Library("Nathan's lil library")
 
-library1.add_book(Book("Harry Potter and the Order of the Phoenix", "J.K. Rowling", 2003))
-library1.add_book(Book("The Hunger Games", "Suzanne Collins", 2008))
+natlib = Library("Nathan's lil library")
 
-library1.add_member("Nathan")
+natlib.add_book(Book("Harry Potter and the Order of the Phoenix", "J.K. Rowling", 2003))
+natlib.add_book(Book("The Hunger Games", "Suzanne Collins", 2008))
 
-library1.checkout_book("Nathan", 1)
+natlib.add_member("Nathan")
 
-print(library1.members)
-print(library1.books)
+natlib.checkout_book("Nathan", 1)
+
+print(natlib.members)
+print(natlib.books)
