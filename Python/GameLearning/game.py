@@ -2,12 +2,14 @@
 Platformer Game
 """
 import arcade
-import colorsys
 
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
+
+# Movement speed of player, in pixels per frame
+PLAYER_MOVEMENT_SPEED = 5
 
 # Allows the size of diffrent types of sprites to be changed.
 CHARACTER_SCALING = 1
@@ -25,24 +27,27 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
 
-        # Make some empty varibles to hold the sprites. (No type hints cuz we cheeky python users)
-        self.wall_list = None
-        self.player_list = None
+        # The scene attribute
+        self.scene = None
 
         arcade.set_background_color(arcade.csscolor.DARK_BLUE)
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        # Create the Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+        # Make an empty scene.
+        self.scene = arcade.Scene()
+
+        # Create the list for the player sprites
+        self.scene.add_sprite_list("Player")
+        # Stores the sprites for walls and enables the physics optimisation for static scenes.
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 128
-        self.player_list.append(self.player_sprite)
+        self.scene.add_sprite("Player", self.player_sprite)
 
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
@@ -50,7 +55,7 @@ class MyGame(arcade.Window):
             wall = arcade.Sprite(":resources:images/tiles/grassMid.png", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
-            self.wall_list.append(wall)
+            self.scene.add_sprite("Walls", wall)
 
         # Put some crates on the ground
         # This shows using a coordinate list to place sprites
@@ -63,22 +68,50 @@ class MyGame(arcade.Window):
                 ":resources:images/items/coinGold.png", 0.8 
             )
             wall.position = coordinate
-            self.wall_list.append(wall)
+            self.scene.add_sprite("Walls", wall)
+
+        # Create the 'physics engine'
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite, self.scene.get_sprite_list("Walls")
+        )
+    
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+    
+    def on_key_release(self, key, modifiers):
+        """Called when the user releases a key."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = 0
+
+    def on_update(self, delta_time):
+        """Movement and game logic"""
+
+        # Move the player with the physics engine
+        self.physics_engine.update()
 
     def on_draw(self):
         """Render the screen."""
-        # arcade.set_background_color(colorsys.hls_to_rgb(self.hue, 255, 255))
-        # self.hue += .02
-        # if self.hue >= 1:
-        #     self.hue = 0
-        
         self.clear()
         # Code to draw the screen goes here
 
-        # Draw our sprites
-        self.wall_list.draw()
-        self.player_list.draw()
-
+        # Draw our Scene
+        self.scene.draw()
 
 def main():
     """Main function"""
