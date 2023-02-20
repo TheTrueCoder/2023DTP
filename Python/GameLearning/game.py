@@ -17,6 +17,7 @@ PLAYER_JUMP_SPEED = 20
 # Allows the size of diffrent types of sprites to be changed.
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
+COIN_SCALING = 0.5
 
 
 class MyGame(arcade.Window):
@@ -51,6 +52,10 @@ class MyGame(arcade.Window):
         # Stores the sprites for walls and enables the physics optimisation for static scenes.
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
+        # Load sounds into memory for low-latency playback.
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
@@ -73,12 +78,19 @@ class MyGame(arcade.Window):
 
         for coordinate in coordinate_list:
             # Add a crate on the ground
-            wall = arcade.Sprite(
-                # ":resources:images/tiles/boxCrate_double.png", TILE_SCALING
-                ":resources:images/items/coinGold.png", 0.8
+            wall = arcade.Sprite(   
+                ":resources:images/tiles/boxCrate_double.png", TILE_SCALING
+                # ":resources:images/items/coinGold.png", 0.8
             )
             wall.position = coordinate
             self.scene.add_sprite("Walls", wall)
+
+        # Use a loop to place some coins for our character to pick up
+        for x in range(128, 1250, 256):
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            coin.center_x = x
+            coin.center_y = 96
+            self.scene.add_sprite("Coins", coin)
 
         # Create the 'physics engine' which lets the player walk around.
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -91,13 +103,24 @@ class MyGame(arcade.Window):
         # Move the player with the physics engine
         self.physics_engine.update()
 
+        # See if we hit any coins
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene["Coins"]
+        )
+
+        # Loop through each coin we hit (if any) and remove it
+        for coin in coin_hit_list:
+            # Remove the coin
+            coin.remove_from_sprite_lists()
+            # Play a sound
+            arcade.play_sound(self.collect_coin_sound)
+
     def on_draw(self):
         """Render the screen."""
         self.clear()
         # Code to draw the screen goes here
         # Position the camera
         self.center_camera_to_player()
-        
         
         # Activate our Camera
         self.camera.use()
@@ -110,6 +133,7 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                arcade.play_sound(self.jump_sound)
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
