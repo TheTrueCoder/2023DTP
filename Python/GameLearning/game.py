@@ -2,6 +2,7 @@
 Platformer Game
 """
 import arcade
+from pyglet import input
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -10,10 +11,13 @@ SCREEN_TITLE = "Platformer"
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 5
+GRAVITY = 1
+PLAYER_JUMP_SPEED = 20
 
 # Allows the size of diffrent types of sprites to be changed.
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
+
 
 class MyGame(arcade.Window):
     """
@@ -30,12 +34,17 @@ class MyGame(arcade.Window):
         # The scene attribute
         self.scene = None
 
+        self.camera = None
+
         arcade.set_background_color(arcade.csscolor.DARK_BLUE)
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         # Make an empty scene.
         self.scene = arcade.Scene()
+
+        # The camera that follows the player and gets dem premium shots.
+        self.camera = arcade.Camera(self.width, self.height)
 
         # Create the list for the player sprites
         self.scene.add_sprite_list("Player")
@@ -52,7 +61,8 @@ class MyGame(arcade.Window):
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
         for x in range(0, 1250, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", TILE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassMid.png", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.scene.add_sprite("Walls", wall)
@@ -65,39 +75,15 @@ class MyGame(arcade.Window):
             # Add a crate on the ground
             wall = arcade.Sprite(
                 # ":resources:images/tiles/boxCrate_double.png", TILE_SCALING
-                ":resources:images/items/coinGold.png", 0.8 
+                ":resources:images/items/coinGold.png", 0.8
             )
             wall.position = coordinate
             self.scene.add_sprite("Walls", wall)
 
-        # Create the 'physics engine'
-        self.physics_engine = arcade.PhysicsEngineSimple(
-            self.player_sprite, self.scene.get_sprite_list("Walls")
+        # Create the 'physics engine' which lets the player walk around.
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Walls"]
         )
-    
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed."""
-
-        if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-    
-    def on_key_release(self, key, modifiers):
-        """Called when the user releases a key."""
-
-        if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -109,9 +95,50 @@ class MyGame(arcade.Window):
         """Render the screen."""
         self.clear()
         # Code to draw the screen goes here
-
+        # Position the camera
+        self.center_camera_to_player()
+        
+        
+        # Activate our Camera
+        self.camera.use()
         # Draw our Scene
         self.scene.draw()
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
+    def on_key_release(self, key, modifiers):
+        """Called when the user releases a key."""
+
+        if key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = 0
+
+    def center_camera_to_player(self):
+        screen_center_x = self.player_sprite.center_x - \
+            (self.camera.viewport_width / 2)
+        screen_center_y = self.player_sprite.center_y - (
+            self.camera.viewport_height / 2
+        )
+
+        # Don't let camera travel past 0
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_y < 0:
+            screen_center_y = 0
+        player_centered = screen_center_x, screen_center_y
+
+        self.camera.move_to(player_centered)
+
 
 def main():
     """Main function"""
