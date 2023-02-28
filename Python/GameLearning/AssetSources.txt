@@ -1,8 +1,11 @@
-
-Not used but I wanna:   
 Archeologist character: https://elthen.itch.io/2d-pixel-art-archaeologist
+
+Not used but I wanna:
 Forrest Environment: https://slowdevelopment.itch.io/tiny-forest
 Big Ol fantasy pack: https://anokolisa.itch.io/sidescroller-pixelart-sprites-asset-pack-forest-16x16
 SAF Forest: https://trixelized.itch.io/starstring-fields
 
 Town Environment: https://cainos.itch.io/pixel-art-platformer-village-props
+
+Audio:
+Cinematic SFX: https://gregor-quendel.itch.io/free-cinematic-sound-effects
