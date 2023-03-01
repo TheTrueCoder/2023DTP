@@ -85,19 +85,23 @@ class MyGame(arcade.Window):
         # Static camera to render UI elements
         self.gui_camera = arcade.Camera(self.width, self.height)
 
-        # Keep track of the score
-        self.score = 0
+        # Keep track of the score, make sure we keep the score if the player finishes a level
+        if self.reset_score:
+            self.score = 0
+        self.reset_score = True
 
         # Name of map file to load
-        # map_name = "./Maps/MagicCaves.tmx"
-        map_name = "./Maps/Tutorial.tmx"
-        # map_name = ":resources:tiled_maps/map.json"
+        map_name = f":resources:tiled_maps/map2_level_{self.level}.json"
 
-        # Layer specific options are defined based on Layer names in a dictionary
-        # Doing this will make the SpriteList for the platforms layer
-        # use spatial hashing for detection.
+        # Layer Specific Options for the Tilemap
         layer_options = {
-            "Platforms": {
+            LAYER_NAME_PLATFORMS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_COINS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_DONT_TOUCH: {
                 "use_spatial_hash": True,
             },
         }
@@ -108,6 +112,9 @@ class MyGame(arcade.Window):
         # Initialize Scene with our TileMap, this will automatically add all layers
         # from the map as SpriteLists in the scene in the proper order.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+        # Figure out end location
+        # Calculate the right edge of the my_map in pixels
+        self.end_of_map = self.tile_map.width * GRID_PIXEL_SIZE
 
         # Create the list for the player sprites
         self.scene.add_sprite_list("Player")
@@ -115,8 +122,15 @@ class MyGame(arcade.Window):
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
         # Load sounds into memory for low-latency playback.
-        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
-        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        # self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        # self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+
+        # Add Player Spritelist before "Foreground" layer. This will make the foreground
+        # be drawn after the player, making it appear to be in front of the Player.
+        # Setting before using scene.add_sprite allows us to define where the SpriteList
+        # will be in the draw order. If we just use add_sprite, it will be appended to the
+        # end of the order.
+        self.scene.add_sprite_list_after("Player", LAYER_NAME_FOREGROUND)
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
@@ -154,6 +168,36 @@ class MyGame(arcade.Window):
             self.score += 1
             # Play a sound
             arcade.play_sound(self.collect_coin_sound)
+
+        # DYING and WINNING
+        # Did the player fall off the map?
+        if self.player_sprite.center_y < -100:
+            self.player_sprite.center_x = PLAYER_START_X
+            self.player_sprite.center_y = PLAYER_START_Y
+
+            arcade.play_sound(self.game_over)
+
+        # Did the player touch something they should not?
+        if arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene[LAYER_NAME_DONT_TOUCH]
+        ):
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
+            self.player_sprite.center_x = PLAYER_START_X
+            self.player_sprite.center_y = PLAYER_START_Y
+
+            arcade.play_sound(self.game_over)
+
+        # See if the user got to the end of the level
+        if self.player_sprite.center_x >= self.end_of_map:
+            # Advance to the next level
+            self.level += 1
+
+            # Make sure to keep the score from this level when setting up the next level
+            self.reset_score = False
+
+            # Load the next level
+            self.setup()
 
     def on_draw(self):
         """Render the screen."""
