@@ -1,0 +1,45 @@
+{
+    "activeFile": "MagicCaves.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/GameLearning/Sprites/Kenny/Kenny items.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/GameLearning/Sprites/Kenny/Kenny terrain.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/GameLearning/Sprites/MagicCliffs.tsx": {
+            "scaleInDock": 1
+        },
+        "MagicCaves.tmx": {
+            "scale": 1.8505208333333334,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 239.66225724739655,
+                "y": 160.22516183506895
+            }
+        },
+        "Tutorial.tmx": {
+            "scale": 0.13878906249999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 3195.496763298621,
+                "y": 1286.124401913876
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Nathan/Documents/Code/2023DTP/Python/GameLearning/Maps",
+    "last.imagePath": "//wbfp02.westlake.local/shomes/nr19468/Documents/2023DTP/Python/GameLearning/Sprites/Magic-Cliffs-Gamekit/Environment/PNG",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "openFiles": [
+        "MagicCaves.tmx",
+        "Tutorial.tmx"
+    ],
+    "project": "LearningMaps.tiled-project",
+    "recentFiles": [
+        "Tutorial.tmx",
+        "MagicCaves.tmx"
+    ]
+}

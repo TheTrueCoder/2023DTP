@@ -25,19 +25,24 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    hue = 0
+    scene = None
 
     def __init__(self):
 
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=False)
 
         # The scene attribute
         self.scene = None
 
         self.camera = None
+        # A Camera that can be used to draw GUI elements
+        self.gui_camera = None
 
-        # Our TileMap Object
+        # Keep track of the score
+        self.score = 0
+
+        # Holds the data of the Tiled level
         self.tile_map = None
 
         arcade.set_background_color(arcade.csscolor.DARK_BLUE)
@@ -51,8 +56,8 @@ class MyGame(arcade.Window):
         self.camera = arcade.Camera(self.width, self.height)
 
         # Name of map file to load
-        # map_name = "./Maps/MagicCaves.tmx"
-        map_name = "./Maps/Tutorial.tmx"
+        map_name = "./Maps/MagicCaves.tmx"
+        # map_name = "./Maps/Tutorial.tmx"
         # map_name = ":resources:tiled_maps/map.json"
 
         # Layer specific options are defined based on Layer names in a dictionary
