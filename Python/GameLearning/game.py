@@ -14,10 +14,25 @@ PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
-# Allows the size of diffrent types of sprites to be changed.
+# Allows the size of different types of sprites to be changed.
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
+
+# Map size constants
+SPRITE_PIXEL_SIZE = 128
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
+
+# Player starting position
+PLAYER_START_X = 64
+PLAYER_START_Y = 225
+
+# Layer Names from our TileMap
+LAYER_NAME_PLATFORMS = "Platforms"
+LAYER_NAME_COINS = "Coins"
+LAYER_NAME_FOREGROUND = "Foreground"
+LAYER_NAME_BACKGROUND = "Background"
+LAYER_NAME_DONT_TOUCH = "Don't Touch"
 
 
 class MyGame(arcade.Window):
@@ -25,27 +40,39 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
+    # The scene attribute
     scene = None
+    # Holds the data of the Tiled level
+    tile_map = None
+
+    # The camera that follows the player
+    camera = None
+    # A Camera that can be used to draw GUI elements
+    gui_camera = None
+
+    # Keep track of the score
+    score = 0
+
+    # Where is the right edge of the map?
+    end_of_map = 0
+
+    # Level
+    level = 1
+
+    # Do we need to reset the score?
+    reset_score = True
 
     def __init__(self):
 
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=False)
 
-        # The scene attribute
-        self.scene = None
-
-        self.camera = None
-        # A Camera that can be used to draw GUI elements
-        self.gui_camera = None
-
-        # Keep track of the score
-        self.score = 0
-
-        # Holds the data of the Tiled level
-        self.tile_map = None
-
         arcade.set_background_color(arcade.csscolor.DARK_BLUE)
+
+        # Load sounds
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -55,9 +82,15 @@ class MyGame(arcade.Window):
         # The camera that follows the player and gets dem premium shots.
         self.camera = arcade.Camera(self.width, self.height)
 
+        # Static camera to render UI elements
+        self.gui_camera = arcade.Camera(self.width, self.height)
+
+        # Keep track of the score
+        self.score = 0
+
         # Name of map file to load
-        map_name = "./Maps/MagicCaves.tmx"
-        # map_name = "./Maps/Tutorial.tmx"
+        # map_name = "./Maps/MagicCaves.tmx"
+        map_name = "./Maps/Tutorial.tmx"
         # map_name = ":resources:tiled_maps/map.json"
 
         # Layer specific options are defined based on Layer names in a dictionary
@@ -117,6 +150,8 @@ class MyGame(arcade.Window):
         for coin in coin_hit_list:
             # Remove the coin
             coin.remove_from_sprite_lists()
+            # Add a point to the score
+            self.score += 1
             # Play a sound
             arcade.play_sound(self.collect_coin_sound)
 
@@ -131,6 +166,16 @@ class MyGame(arcade.Window):
         self.camera.use()
         # Draw our Scene
         self.scene.draw()
+
+        # UI DRAW
+        self.gui_camera.use()
+
+        # Draw the score on screen
+        arcade.draw_text(
+            f"Score: {self.score}",
+            10, 10,
+            font_size = 20
+        )
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
