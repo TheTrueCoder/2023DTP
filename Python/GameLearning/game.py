@@ -37,6 +37,9 @@ class MyGame(arcade.Window):
 
         self.camera = None
 
+        # Our TileMap Object
+        self.tile_map = None
+
         arcade.set_background_color(arcade.csscolor.DARK_BLUE)
 
     def setup(self):
@@ -46,6 +49,27 @@ class MyGame(arcade.Window):
 
         # The camera that follows the player and gets dem premium shots.
         self.camera = arcade.Camera(self.width, self.height)
+
+        # Name of map file to load
+        # map_name = "./Maps/MagicCaves.tmx"
+        map_name = "./Maps/Tutorial.tmx"
+        # map_name = ":resources:tiled_maps/map.json"
+
+        # Layer specific options are defined based on Layer names in a dictionary
+        # Doing this will make the SpriteList for the platforms layer
+        # use spatial hashing for detection.
+        layer_options = {
+            "Platforms": {
+                "use_spatial_hash": True,
+            },
+        }
+
+        # Read in the tiled map
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+        # Initialize Scene with our TileMap, this will automatically add all layers
+        # from the map as SpriteLists in the scene in the proper order.
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         # Create the list for the player sprites
         self.scene.add_sprite_list("Player")
@@ -63,38 +87,14 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-        # Create the ground
-        # This shows using a loop to place multiple sprites horizontally
-        for x in range(0, 1250, 64):
-            wall = arcade.Sprite(
-                ":resources:images/tiles/grassMid.png", TILE_SCALING)
-            wall.center_x = x
-            wall.center_y = 32
-            self.scene.add_sprite("Walls", wall)
+         # --- Other stuff
+        # Set the background color
+        if self.tile_map.background_color:
+            arcade.set_background_color(self.tile_map.background_color)
 
-        # Put some crates on the ground
-        # This shows using a coordinate list to place sprites
-        coordinate_list = [[512, 96], [256, 96], [768, 96], [1000, 150]]
-
-        for coordinate in coordinate_list:
-            # Add a crate on the ground
-            wall = arcade.Sprite(   
-                ":resources:images/tiles/boxCrate_double.png", TILE_SCALING
-                # ":resources:images/items/coinGold.png", 0.8
-            )
-            wall.position = coordinate
-            self.scene.add_sprite("Walls", wall)
-
-        # Use a loop to place some coins for our character to pick up
-        for x in range(128, 1250, 256):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
-            coin.center_x = x
-            coin.center_y = 96
-            self.scene.add_sprite("Coins", coin)
-
-        # Create the 'physics engine' which lets the player walk around.
+        # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Walls"]
+            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
         )
 
     def on_update(self, delta_time):
