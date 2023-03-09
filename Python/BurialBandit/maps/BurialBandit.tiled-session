@@ -19,8 +19,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 294,
-                "y": 147.66666666666666
+                "x": 464,
+                "y": 160.33333333333331
             }
         },
         "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit/MagicCliffs.tmx#tiles": {
@@ -42,8 +42,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 207.33333333333334,
-                "y": 213.66666666666666
+                "x": 640,
+                "y": 159.66666666666666
             }
         },
         "FantasyJungle_map1.tmx#tiles": {

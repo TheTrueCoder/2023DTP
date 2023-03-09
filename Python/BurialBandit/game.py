@@ -79,13 +79,15 @@ class TheGame(arcade.Window):
         # CREATE PLAYER CHARACTER
         # Create the list for the player sprites
         self.scene.add_sprite_list("Player")
-        
+        # Put in front of the BG so the
+        # player is not hidden incorrectly.
+        self.scene.add_sprite_list_after("Player", LAYER_NAME_FOREGROUND)
         
         # Make the player character object and
         # place them at the start of the level.
         self.player_sprite = arcade.Sprite("assets/Archeologist-Character/StaticSprite.png", 2)
         self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 400
+        self.player_sprite.center_y = 256
         self.scene.add_sprite("Player", self.player_sprite)
 
         # Create the physics engine to let the player move.
