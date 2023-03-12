@@ -1,4 +1,5 @@
 import arcade
+import arcade.gl
 import player
 
 # App parameters
@@ -7,7 +8,7 @@ SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Burial Bandit"
 
 # Scaling
-TILE_SCALING = 2
+TILE_SCALING = 4
 
 # Physics
 GRAVITY = 1
@@ -85,7 +86,7 @@ class TheGame(arcade.Window):
         
         # Make the player character object and
         # place them at the start of the level.
-        self.player_sprite = arcade.Sprite("assets/Archeologist-Character/StaticSprite.png", 2)
+        self.player_sprite = player.PlayerCharacter(4)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 256
         self.scene.add_sprite("Player", self.player_sprite)
@@ -108,7 +109,8 @@ class TheGame(arcade.Window):
         self.clear()
 
         self.camera.use()
-        self.scene.draw()
+        # Draw with nearest pixel sampling to get that pixelated look.
+        self.scene.draw(filter = arcade.gl.NEAREST)
 
     # Input Handling
 
