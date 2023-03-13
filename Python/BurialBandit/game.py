@@ -1,6 +1,7 @@
 import arcade
 import arcade.gl
 import player
+from inputs import Inputs
 
 # App parameters
 SCREEN_WIDTH = 1000
@@ -12,6 +13,10 @@ TILE_SCALING = 4
 
 # Physics
 GRAVITY = 1
+
+# Movement speed
+PLAYER_MOVEMENT_SPEED = 1
+PLAYER_JUMP_SPEED = 1
 
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
@@ -40,6 +45,16 @@ class TheGame(arcade.Window):
     # Cameras
     camera = None
 
+    # Holds the current input values
+    inputs = None
+    # Axis go from 1 to -1 to define direction and speed.
+    # inputs.axis.up: float = None
+    # inputs.axis.right: float = None
+    # Actions are on/off button presses
+    # inputs.actions.jump: bool = None
+
+
+
     def __init__(self) -> None:
 
         # Create the window
@@ -53,6 +68,8 @@ class TheGame(arcade.Window):
         # Make the camera that will follow the player.
         self.camera = arcade.Camera(self.width, self.height)
 
+        # INPUT SYSTEM
+        self.inputs = Inputs()
 
         # MAP LOAD
         # The path to the map file
@@ -88,7 +105,7 @@ class TheGame(arcade.Window):
         # place them at the start of the level.
         self.player_sprite = player.PlayerCharacter(4)
         self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 256
+        self.player_sprite.center_y = 500
         self.scene.add_sprite("Player", self.player_sprite)
 
         # Create the physics engine to let the player move.
@@ -111,8 +128,72 @@ class TheGame(arcade.Window):
         self.camera.use()
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
+        # self.scene.draw()
 
-    # Input Handling
+    # 
+    def process_keychange(self):
+        """
+        Updates the input's impact on gameplay.
+        """
+        # Process up/down
+        if self.inputs.up_pressed and not self.inputs.down_pressed:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+            elif (
+                self.physics_engine.can_jump(y_distance=10)
+                and not self.inputs.jump_needs_reset
+            ):
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                self.inputs.jump_needs_reset = True
+                arcade.play_sound(self.jump_sound)
+        elif self.inputs.down_pressed and not self.inputs.up_pressed:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
+
+        # Process up/down when on a ladder and no movement
+        if self.physics_engine.is_on_ladder():
+            if not self.inputs.up_pressed and not self.inputs.down_pressed:
+                self.player_sprite.change_y = 0
+            elif self.inputs.up_pressed and self.inputs.down_pressed:
+                self.player_sprite.change_y = 0
+
+        # Process left/right
+        if self.inputs.right_pressed and not self.inputs.left_pressed:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+        elif self.inputs.left_pressed and not self.inputs.right_pressed:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        else:
+            self.player_sprite.change_x = 0
+
+    # CAPTURE INPUTS
+    def on_key_press(self, key, modifiers):
+        """Sets input value for the pressed key."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.inputs.up_pressed = True
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.inputs.down_pressed = True
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.inputs.left_pressed = True
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.inputs.right_pressed = True
+
+        self.process_keychange()
+
+    def on_key_release(self, key, modifiers):
+        """Resets input value corresponding to the key released."""
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.inputs.up_pressed = False
+            self.inputs.jump_needs_reset = False
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.inputs.down_pressed = False
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.inputs.left_pressed = False
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.inputs.right_pressed = False
+
+        self.process_keychange()
 
 
 
