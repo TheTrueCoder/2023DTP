@@ -12,11 +12,11 @@ SCREEN_TITLE = "Burial Bandit"
 TILE_SCALING = 4
 
 # Physics
-GRAVITY = 1
+GRAVITY = 0.5
 
 # Movement speed
-PLAYER_MOVEMENT_SPEED = 1
-PLAYER_JUMP_SPEED = 1
+PLAYER_MOVEMENT_SPEED = 7
+PLAYER_JUMP_SPEED = 15
 
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
@@ -117,7 +117,7 @@ class TheGame(arcade.Window):
         """Movement and game logic"""
 
         # Move the player with the physics engine
-        # self.physics_engine.update()
+        self.physics_engine.update()
 
 
     def on_draw(self):
@@ -145,7 +145,7 @@ class TheGame(arcade.Window):
             ):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 self.inputs.jump_needs_reset = True
-                arcade.play_sound(self.jump_sound)
+                # arcade.play_sound(self.jump_sound) # NOTE: Add sounds later
         elif self.inputs.down_pressed and not self.inputs.up_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
