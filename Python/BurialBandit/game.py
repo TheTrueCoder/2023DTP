@@ -1,6 +1,7 @@
 import arcade
 import arcade.gl
 import player
+import camera
 from inputs import Inputs
 
 # App parameters
@@ -66,16 +67,16 @@ class TheGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
         # CAMERAS
         # Make the camera that will follow the player.
-        self.camera = arcade.Camera(self.width, self.height)
+        self.camera = camera.CinematicCamera(self.width, self.height)
 
         # INPUT SYSTEM
         self.inputs = Inputs()
 
         # MAP LOAD
         # The path to the map file
-        map_name = "maps/FantasyJungle_map1.tmx"
+        map_name = "maps/Level_1.tmx"
 
-        # Configure map layers
+        # Configure map layers to optimise performance.
         layer_options = {
             "Platforms": {
                 "use_spatial_hash": True,
@@ -105,7 +106,7 @@ class TheGame(arcade.Window):
         # place them at the start of the level.
         self.player_sprite = player.PlayerCharacter(4)
         self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 500
+        self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
         # Create the physics engine to let the player move.
@@ -122,15 +123,15 @@ class TheGame(arcade.Window):
 
     def on_draw(self):
         """Render the screen."""
-
         self.clear()
 
+        self.camera.camera_to_player(self.player_sprite)
         self.camera.use()
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
         # self.scene.draw()
 
-    # 
+
     def process_keychange(self):
         """
         Updates the input's impact on gameplay.

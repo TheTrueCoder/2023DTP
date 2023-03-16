@@ -5,8 +5,10 @@
     },
     "activeFile": "FantasyJungle_map1.tmx",
     "expandedProjectPaths": [
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit",
+        ".",
         "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets",
-        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit"
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins"
     ],
     "fileStates": {
         "": {
@@ -16,7 +18,12 @@
             "scaleInDock": 1
         },
         "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins/GroundTiles.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 5.5
+        },
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins/GroundTiles_16px.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit/MagicCliffs.tmx": {
             "scale": 1.5,
@@ -49,19 +56,19 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 296,
-                "y": 159.66666666666666
+                "x": 402.66666666666663,
+                "y": 213
             }
         },
         "FantasyJungle_map1.tmx#tiles": {
             "scaleInDock": 1
         },
         "Level_1.tmx": {
-            "scale": 1,
-            "selectedLayer": 1,
+            "scale": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 344,
-                "y": 161.5
+                "x": 457,
+                "y": 257.75
             }
         }
     },
@@ -73,14 +80,18 @@
     "map.width": 80,
     "openFiles": [
         "FantasyJungle_map1.tmx",
-        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit/MagicCliffs.tmx"
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit/MagicCliffs.tmx",
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins/GroundTiles_16px.tsx",
+        "Level_1.tmx"
     ],
     "project": "BurialBandit.tiled-project",
     "recentFiles": [
-        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/pickups/StaticPickups.tsx",
-        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins/GroundTiles.tsx",
+        "Level_1.tmx",
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins/GroundTiles_16px.tsx",
         "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit/MagicCliffs.tmx",
         "FantasyJungle_map1.tmx",
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/pickups/StaticPickups.tsx",
+        "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/JungleRuins/GroundTiles.tsx",
         "C:/Users/Nathan/Documents/Code/2023DTP/Python/BurialBandit/assets/Magic-Cliffs-Gamekit/tiled.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
