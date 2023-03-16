@@ -12,12 +12,23 @@ SCREEN_TITLE = "Burial Bandit"
 # Scaling
 TILE_SCALING = 4
 
+# Player size
+PLAYER_SCALING = 4
+# Starting location with co-ordiantes in the format (X, Y).
+PLAYER_START_LOCATION = (64, 128)
+
 # Physics
 GRAVITY = 0.5
 
+# PLAYER
 # Movement speed
 PLAYER_MOVEMENT_SPEED = 7
 PLAYER_JUMP_SPEED = 15
+# Player size
+PLAYER_SCALING = 4
+# Starting location with coordinates in the format (X, Y).
+PLAYER_START_LOCATION = (64, 128)
+LAYER_NAME_PLAYER = "Player"
 
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
@@ -78,13 +89,21 @@ class TheGame(arcade.Window):
 
         # Configure map layers to optimise performance.
         layer_options = {
-            "Platforms": {
+            LAYER_NAME_PLATFORMS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_PICKUPS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_DONT_TOUCH: {
                 "use_spatial_hash": True,
             },
         }
 
         # Load tiled map
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+        print(self.tile_map.properties)
         
         # Convert Tiled map to a arcade scene with SpriteLists for each layer.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -97,17 +116,17 @@ class TheGame(arcade.Window):
 
         # CREATE PLAYER CHARACTER
         # Create the list for the player sprites
-        self.scene.add_sprite_list("Player")
+        self.scene.add_sprite_list(LAYER_NAME_PLAYER)
         # Put in front of the BG so the
         # player is not hidden incorrectly.
-        self.scene.add_sprite_list_after("Player", LAYER_NAME_FOREGROUND)
+        self.scene.add_sprite_list_after(LAYER_NAME_PLAYER, LAYER_NAME_FOREGROUND)
         
         # Make the player character object and
         # place them at the start of the level.
-        self.player_sprite = player.PlayerCharacter(4)
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 128
-        self.scene.add_sprite("Player", self.player_sprite)
+        self.player_sprite = player.PlayerCharacter(PLAYER_SCALING)
+        self.player_sprite.center_x = PLAYER_START_LOCATION[0]
+        self.player_sprite.center_y = PLAYER_START_LOCATION[1]
+        self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Create the physics engine to let the player move.
         self.physics_engine = arcade.PhysicsEnginePlatformer(
@@ -120,6 +139,15 @@ class TheGame(arcade.Window):
         # Move the player with the physics engine
         self.physics_engine.update()
 
+        # Check if the player hits something damaging
+        if arcade.check_for_collision_with_list(
+            self.player_sprite,
+            self.scene[LAYER_NAME_DONT_TOUCH]
+        ):
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
+            self.player_sprite.center_x = PLAYER_START_LOCATION[0]
+            self.player_sprite.center_y = PLAYER_START_LOCATION[1]
 
     def on_draw(self):
         """Render the screen."""
