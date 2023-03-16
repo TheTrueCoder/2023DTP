@@ -59,13 +59,9 @@ class TheGame(arcade.Window):
 
     # Holds the current input values
     inputs = None
-    # Axis go from 1 to -1 to define direction and speed.
-    # inputs.axis.up: float = None
-    # inputs.axis.right: float = None
-    # Actions are on/off button presses
-    # inputs.actions.jump: bool = None
-
-
+    
+    # Keys
+    keys_picked_up = 0
 
     def __init__(self) -> None:
 
@@ -119,7 +115,7 @@ class TheGame(arcade.Window):
         self.scene.add_sprite_list(LAYER_NAME_PLAYER)
         # Put in front of the BG so the
         # player is not hidden incorrectly.
-        self.scene.add_sprite_list_after(LAYER_NAME_PLAYER, LAYER_NAME_FOREGROUND)
+        self.scene.add_sprite_list_before(LAYER_NAME_PLAYER, LAYER_NAME_FOREGROUND)
         
         # Make the player character object and
         # place them at the start of the level.
@@ -133,21 +129,24 @@ class TheGame(arcade.Window):
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
         )
 
+        # GAMEPLAY VALUES
+        # Set Keys picked up to none.
+        self.keys_picked_up = 0
+        # print("Initial keys picked up: "+str(self.keys_picked_up))
+
+
     def on_update(self, delta_time):
         """Movement and game logic"""
 
-        # Move the player with the physics engine
+        # Move the player with the physics engine.
         self.physics_engine.update()
 
-        # Check if the player hits something damaging
-        if arcade.check_for_collision_with_list(
-            self.player_sprite,
-            self.scene[LAYER_NAME_DONT_TOUCH]
-        ):
-            self.player_sprite.change_x = 0
-            self.player_sprite.change_y = 0
-            self.player_sprite.center_x = PLAYER_START_LOCATION[0]
-            self.player_sprite.center_y = PLAYER_START_LOCATION[1]
+        # Check if the player hits something deadly.
+        self.check_for_deadly_surfaces()
+
+        # Check if the player picked up a key.
+        self.check_for_pickup_collision()
+        
 
     def on_draw(self):
         """Render the screen."""
@@ -159,6 +158,32 @@ class TheGame(arcade.Window):
         self.scene.draw(filter = arcade.gl.NEAREST)
         # self.scene.draw()
 
+    def check_for_deadly_surfaces(self):
+        """Check if the player hits something damaging"""
+        if arcade.check_for_collision_with_list(
+            self.player_sprite,
+            self.scene[LAYER_NAME_DONT_TOUCH]
+        ):
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
+            self.player_sprite.center_x = PLAYER_START_LOCATION[0]
+            self.player_sprite.center_y = PLAYER_START_LOCATION[1]
+
+    def check_for_pickup_collision(self):
+        # See if we hit any keys
+        pickup_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene[LAYER_NAME_PICKUPS]
+        )
+
+        # Loop through each key we hit (if any) and remove it
+        for pickup in pickup_hit_list:
+            # Remove the coin
+            pickup.remove_from_sprite_lists()
+            # Add to the key counter
+            self.keys_picked_up += 1
+            # Play a sound
+            # arcade.play_sound(self.collect_coin_sound)
+            # print("Keys picked up: "+str(self.keys_picked_up))
 
     def process_keychange(self):
         """
