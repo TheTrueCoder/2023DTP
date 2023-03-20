@@ -1,8 +1,11 @@
 import arcade
 
-class CinematicCamera(arcade.Camera):
+MOVE_SPEED = .1
+
+class GameCamera(arcade.Camera):
     """
-    Adds features to the default camera to make the movement nicer.
+    Controls and configures the built-in camera
+    to follow the player and make it more nice.
     """
 
     def camera_to_player(self, player_sprite: arcade.Sprite):
@@ -21,4 +24,4 @@ class CinematicCamera(arcade.Camera):
             screen_center_y = 0
         player_centered = screen_center_x, screen_center_y
 
-        self.move_to(player_centered)
+        self.move_to(player_centered, MOVE_SPEED)

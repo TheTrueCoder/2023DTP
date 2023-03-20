@@ -84,7 +84,7 @@ class TheGame(arcade.Window):
         """Set up the game here. Call this function to restart the game."""
         # CAMERAS
         # Make the camera that will follow the player.
-        self.camera = camera.CinematicCamera(self.width, self.height)
+        self.camera = camera.GameCamera(self.width, self.height)
 
         # INPUT SYSTEM
         self.inputs = Inputs()
