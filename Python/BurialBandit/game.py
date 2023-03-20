@@ -30,12 +30,19 @@ PLAYER_SCALING = 4
 PLAYER_START_LOCATION = (64, 128)
 LAYER_NAME_PLAYER = "Player"
 
+# LEVELS
+LEVELS = [
+    'maps/Level_1_Jungle.tmx',
+    'maps/Level_2_Cave.tmx',
+]
+
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
 LAYER_NAME_PICKUPS = "Pickups"
 LAYER_NAME_FOREGROUND = "Foreground"
 LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_DONT_TOUCH = "Don't Touch"
+LAYER_NAME_NEXT_LEVEL = "Next Level"
 
 class TheGame(arcade.Window):
     """
@@ -63,6 +70,9 @@ class TheGame(arcade.Window):
     # Keys
     keys_picked_up = 0
 
+    # Level index
+    current_level_index = 0
+
     def __init__(self) -> None:
 
         # Create the window
@@ -81,7 +91,7 @@ class TheGame(arcade.Window):
 
         # MAP LOAD
         # The path to the map file
-        map_name = "maps/Level_1.tmx"
+        map_name = LEVELS[self.current_level_index]
 
         # Configure map layers to optimise performance.
         layer_options = {
@@ -99,7 +109,8 @@ class TheGame(arcade.Window):
         # Load tiled map
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
 
-        print(self.tile_map.properties)
+        # Can be used to obtain custom properties on the map.
+        # print(self.tile_map.properties)
         
         # Convert Tiled map to a arcade scene with SpriteLists for each layer.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -146,6 +157,8 @@ class TheGame(arcade.Window):
 
         # Check if the player picked up a key.
         self.check_for_pickup_collision()
+
+        self.check_for_next_level()
         
 
     def on_draw(self):
@@ -170,6 +183,8 @@ class TheGame(arcade.Window):
             self.player_sprite.center_y = PLAYER_START_LOCATION[1]
 
     def check_for_pickup_collision(self):
+        """Collect keys when the player walks into them."""
+
         # See if we hit any keys
         pickup_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene[LAYER_NAME_PICKUPS]
@@ -184,6 +199,19 @@ class TheGame(arcade.Window):
             # Play a sound
             # arcade.play_sound(self.collect_coin_sound)
             # print("Keys picked up: "+str(self.keys_picked_up))
+
+    def check_for_next_level(self):
+        """When the player reaches the end of the level,
+        load the next one."""
+
+        if arcade.check_for_collision_with_list(
+            self.player_sprite,
+            self.scene[LAYER_NAME_NEXT_LEVEL]
+        ):
+            self.keys_picked_up = 0
+            if len(LEVELS)-1 > self.current_level_index:
+                self.current_level_index += 1
+            self.setup()
 
     def process_keychange(self):
         """
