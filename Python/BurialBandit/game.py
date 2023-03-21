@@ -125,6 +125,9 @@ class TheGame(arcade.Window):
         if self.tile_map.background_color:
             arcade.set_background_color(self.tile_map.background_color)
 
+        # Get the player start location from the tiled map file.
+        # Uses a point object on the "Spawn Location" layer
+        # to define the location.
         if LAYER_NAME_SPAWN_LOCATION in self.tile_map.object_lists.keys():
             player_start_location: arcade.Point = self.tile_map.object_lists[LAYER_NAME_SPAWN_LOCATION][0].shape
         else:
