@@ -14,11 +14,6 @@ SCREEN_TITLE = "Burial Bandit"
 # Scaling
 TILE_SCALING = 4
 
-# Player size
-PLAYER_SCALING = 4
-# Starting location with co-ordiantes in the format (X, Y).
-PLAYER_START_LOCATION = (64, 128)
-
 # Physics
 GRAVITY = 0.5
 
@@ -29,6 +24,7 @@ PLAYER_JUMP_SPEED = 15
 # Player size
 PLAYER_SCALING = 4
 # Starting location with coordinates in the format (X, Y).
+# PLAYER_START_LOCATION = (1024, 1024)
 PLAYER_START_LOCATION = (64, 128)
 LAYER_NAME_PLAYER = "Player"
 
@@ -45,6 +41,7 @@ LAYER_NAME_FOREGROUND = "Foreground"
 LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_DONT_TOUCH = "Don't Touch"
 LAYER_NAME_NEXT_LEVEL = "Next Level"
+LAYER_NAME_LADDERS = "Ladders"
 
 class TheGame(arcade.Window):
     """
@@ -106,6 +103,12 @@ class TheGame(arcade.Window):
             LAYER_NAME_DONT_TOUCH: {
                 "use_spatial_hash": True,
             },
+            LAYER_NAME_LADDERS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_NEXT_LEVEL: {
+                "use_spatial_hash": True,
+            },
         }
 
         # Load tiled map
@@ -139,7 +142,10 @@ class TheGame(arcade.Window):
 
         # Create the physics engine to let the player move.
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
+            self.player_sprite,
+            gravity_constant=GRAVITY,
+            walls=self.scene[LAYER_NAME_PLATFORMS],
+            ladders=self.scene[LAYER_NAME_LADDERS]
         )
 
         # GAMEPLAY VALUES
@@ -163,6 +169,8 @@ class TheGame(arcade.Window):
         self.check_for_pickup_collision()
 
         self.check_for_next_level()
+
+        # print(self.player_sprite.center_y)
         
 
     def on_draw(self):
@@ -171,9 +179,12 @@ class TheGame(arcade.Window):
 
         self.camera.camera_to_player(self.player_sprite)
         self.camera.use()
+
+        # print(self.scene[LAYER_NAME_PLATFORMS])
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
         # self.scene.draw()
+        self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
 
     def check_for_deadly_surfaces(self):
         """Check if the player hits something damaging"""
