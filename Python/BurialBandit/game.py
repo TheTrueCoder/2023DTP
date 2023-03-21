@@ -45,6 +45,7 @@ LAYER_NAME_FOREGROUND = "Foreground"
 LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_DONT_TOUCH = "Don't Touch"
 LAYER_NAME_NEXT_LEVEL = "Next Level"
+LAYER_NAME_SPAWN_LOCATION = "Spawn Location"
 
 class TheGame(arcade.Window):
     """
@@ -120,6 +121,11 @@ class TheGame(arcade.Window):
         # Set the background color from the map file.
         if self.tile_map.background_color:
             arcade.set_background_color(self.tile_map.background_color)
+
+        if LAYER_NAME_SPAWN_LOCATION in self.tile_map.object_lists.keys():
+            player_start_location: arcade.Point = self.tile_map.object_lists[LAYER_NAME_SPAWN_LOCATION][0].shape
+        else:
+            player_start_location: arcade.Point = PLAYER_START_LOCATION
         # END MAP LOAD
 
 
@@ -133,8 +139,8 @@ class TheGame(arcade.Window):
         # Make the player character object and
         # place them at the start of the level.
         self.player_sprite = player.PlayerCharacter(PLAYER_SCALING)
-        self.player_sprite.center_x = PLAYER_START_LOCATION[0]
-        self.player_sprite.center_y = PLAYER_START_LOCATION[1]
+        self.player_sprite.center_x = player_start_location[0]
+        self.player_sprite.center_y = player_start_location[1]
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Create the physics engine to let the player move.
