@@ -1,5 +1,7 @@
 import arcade
 import arcade.gl
+
+# Internal modules
 import player
 import camera
 from inputs import Inputs
@@ -143,6 +145,8 @@ class TheGame(arcade.Window):
         # GAMEPLAY VALUES
         # Set Keys picked up to none.
         self.keys_picked_up = 0
+        # Get the number of keys placed on the pickup layer.
+        self.keys_to_pick_up = len(self.scene[LAYER_NAME_PICKUPS])
         # print("Initial keys picked up: "+str(self.keys_picked_up))
 
 
@@ -207,7 +211,7 @@ class TheGame(arcade.Window):
         if arcade.check_for_collision_with_list(
             self.player_sprite,
             self.scene[LAYER_NAME_NEXT_LEVEL]
-        ):
+        ) and self.keys_picked_up >= self.keys_to_pick_up :
             self.keys_picked_up = 0
             if len(LEVELS)-1 > self.current_level_index:
                 self.current_level_index += 1
