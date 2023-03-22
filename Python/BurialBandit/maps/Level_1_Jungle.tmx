@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="80" height="20" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#358b67" nextlayerid="13" nextobjectid="29">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="80" height="20" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#358b67" nextlayerid="14" nextobjectid="30">
  <tileset firstgid="1" source="../assets/JungleRuins/GroundTiles_16px.tsx"/>
  <tileset firstgid="13" source="../assets/ItemsAndTraps/ItemsAndTraps.tsx"/>
  <tileset firstgid="20" source="../assets/pickups/StaticPickups_16px.tsx"/>
@@ -188,4 +188,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="13" name="Spawn Location">
+  <object id="29" x="320.5" y="199">
+   <point/>
+  </object>
+ </objectgroup>
 </map>
