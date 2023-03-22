@@ -189,11 +189,13 @@ class TheGame(arcade.Window):
         self.camera.camera_to_player(self.player_sprite)
         self.camera.use()
 
-        # print(self.scene[LAYER_NAME_PLATFORMS])
+        # Update tile animations
+        self.scene["test"].update_animation()
+        
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
         # self.scene.draw()
-        self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
+        # self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
 
     def check_for_deadly_surfaces(self):
         """Check if the player hits something damaging"""
