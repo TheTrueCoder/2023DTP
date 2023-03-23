@@ -98,9 +98,6 @@ class TheGame(arcade.Window):
             LAYER_NAME_PLATFORMS: {
                 "use_spatial_hash": True,
             },
-            LAYER_NAME_PICKUPS: {
-                "use_spatial_hash": True,
-            },
             LAYER_NAME_DONT_TOUCH: {
                 "use_spatial_hash": True,
             },
@@ -189,6 +186,7 @@ class TheGame(arcade.Window):
         self.camera.camera_to_player(self.player_sprite)
         self.camera.use()
 
+        self.scene[LAYER_NAME_PICKUPS].update_animation()
         # print(self.scene[LAYER_NAME_PLATFORMS])
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
