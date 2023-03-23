@@ -18,6 +18,13 @@
  </tile>
  <tile id="5">
   <image width="32" height="24" source="StaticSpike.png"/>
+  <animation>
+   <frame tileid="3" duration="100"/>
+   <frame tileid="2" duration="100"/>
+   <frame tileid="1" duration="100"/>
+   <frame tileid="5" duration="100"/>
+   <frame tileid="6" duration="100"/>
+  </animation>
  </tile>
  <tile id="6">
   <image width="32" height="32" source="Suriken.png"/>

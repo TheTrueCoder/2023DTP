@@ -190,7 +190,7 @@ class TheGame(arcade.Window):
         self.camera.use()
 
         # Update tile animations
-        self.scene["test"].update_animation()
+        self.scene[LAYER_NAME_DONT_TOUCH].update_animation()
         
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
