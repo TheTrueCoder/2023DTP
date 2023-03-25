@@ -58,6 +58,9 @@ class TheGame(arcade.Window):
     scene = None
     physics_engine = None
 
+    # Holds all the sounds in the game in a dictionary.
+    sounds = {}
+
     # Holds the player Sprite object
     player_sprite = None
 
@@ -165,6 +168,17 @@ class TheGame(arcade.Window):
         self.camera.camera_to_player(self.player_sprite, 1)
         self.camera.update()
 
+        # LOAD SOUNDS
+        self.sounds = {
+            'keys_on_surface': arcade.load_sound('assets/Audio/keys_on_surface_zapsplat.mp3'),
+        }
+
+        # Hack to prevent lag spikes when playing
+        # the sounds for the first time.
+        for sound in self.sounds.values():
+            sound.stop(sound.play(0))
+        # END LOAD SOUNDS
+
         # GAMEPLAY VALUES
         # Set Keys picked up to none.
         self.keys_picked_up = 0
@@ -222,6 +236,9 @@ class TheGame(arcade.Window):
         pickup_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene[LAYER_NAME_PICKUPS]
         )
+
+        if len(pickup_hit_list) > 0:
+            self.sounds['keys_on_surface'].play()
 
         # Loop through each key we hit (if any) and remove it
         for pickup in pickup_hit_list:
