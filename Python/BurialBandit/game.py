@@ -73,6 +73,9 @@ class TheGame(arcade.Window):
     # Level index
     current_level_index = 0
 
+    # Starting point
+    player_start_location: arcade.Point = None
+
     def __init__(self) -> None:
 
         # Create the window
@@ -96,6 +99,9 @@ class TheGame(arcade.Window):
         # Configure map layers to optimise performance.
         layer_options = {
             LAYER_NAME_PLATFORMS: {
+                "use_spatial_hash": True,
+            },
+            LAYER_NAME_PICKUPS: {
                 "use_spatial_hash": True,
             },
             LAYER_NAME_DONT_TOUCH: {
@@ -126,9 +132,9 @@ class TheGame(arcade.Window):
         # Uses a point object on the "Spawn Location" layer
         # to define the location.
         if LAYER_NAME_SPAWN_LOCATION in self.tile_map.object_lists.keys():
-            player_start_location: arcade.Point = self.tile_map.object_lists[LAYER_NAME_SPAWN_LOCATION][0].shape
+            self.player_start_location = self.tile_map.object_lists[LAYER_NAME_SPAWN_LOCATION][0].shape
         else:
-            player_start_location: arcade.Point = PLAYER_START_LOCATION
+            self.player_start_location = PLAYER_START_LOCATION
         # END MAP LOAD
 
 
@@ -142,8 +148,8 @@ class TheGame(arcade.Window):
         # Make the player character object and
         # place them at the start of the level.
         self.player_sprite = player.PlayerCharacter(PLAYER_SCALING)
-        self.player_sprite.center_x = player_start_location[0]
-        self.player_sprite.center_y = player_start_location[1]
+        self.player_sprite.center_x = self.player_start_location[0]
+        self.player_sprite.center_y = self.player_start_location[1]
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Create the physics engine to let the player move.
@@ -201,8 +207,8 @@ class TheGame(arcade.Window):
         ):
             self.player_sprite.change_x = 0
             self.player_sprite.change_y = 0
-            self.player_sprite.center_x = PLAYER_START_LOCATION[0]
-            self.player_sprite.center_y = PLAYER_START_LOCATION[1]
+            self.player_sprite.center_x = self.player_start_location[0]
+            self.player_sprite.center_y = self.player_start_location[1]
 
     def check_for_pickup_collision(self):
         """Collect keys when the player walks into them."""
