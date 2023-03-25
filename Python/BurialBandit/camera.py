@@ -8,7 +8,7 @@ class GameCamera(arcade.Camera):
     to follow the player and make it more nice.
     """
 
-    def camera_to_player(self, player_sprite: arcade.Sprite):
+    def camera_to_player(self, player_sprite: arcade.Sprite, move_speed: float = MOVE_SPEED):
         """
         Moves the camera to follow the provided player character.
         """
@@ -24,4 +24,4 @@ class GameCamera(arcade.Camera):
             screen_center_y = 0
         player_centered = screen_center_x, screen_center_y
 
-        self.move_to(player_centered, MOVE_SPEED)
+        self.move_to(player_centered, move_speed)

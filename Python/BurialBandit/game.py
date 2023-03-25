@@ -85,10 +85,6 @@ class TheGame(arcade.Window):
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        # CAMERAS
-        # Make the camera that will follow the player.
-        self.camera = camera.GameCamera(self.width, self.height)
-
         # INPUT SYSTEM
         self.inputs = Inputs()
 
@@ -159,6 +155,15 @@ class TheGame(arcade.Window):
             walls=self.scene[LAYER_NAME_PLATFORMS],
             ladders=self.scene[LAYER_NAME_LADDERS]
         )
+        # END CREATE PLAYER CHARACTER
+
+        # CAMERAS
+        # Make the camera that will follow the player.
+        self.camera = camera.GameCamera(self.width, self.height)
+        # Set it's start location to where the player is
+        # instantly, so that it doesn't drift to the start.
+        self.camera.camera_to_player(self.player_sprite, 1)
+        self.camera.update()
 
         # GAMEPLAY VALUES
         # Set Keys picked up to none.
