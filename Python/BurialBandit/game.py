@@ -12,7 +12,7 @@ SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Burial Bandit"
 
 # Scaling
-TILE_SCALING = 4
+TILE_SCALING = 3
 
 # Physics
 GRAVITY = 0.5
@@ -30,8 +30,9 @@ LAYER_NAME_PLAYER = "Player"
 
 # LEVELS
 LEVELS = [
-    'maps/Level_1_Jungle.tmx',
-    'maps/Level_2_Cave.tmx',
+    'maps/1_TownLevel.tmx',
+    'maps/2_JungleLevel.tmx',
+    'maps/3_CaveLevel.tmx',
 ]
 
 # Layer Names from the tiled project
@@ -215,8 +216,8 @@ class TheGame(arcade.Window):
         # print(self.scene[LAYER_NAME_PLATFORMS])
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
-        # self.scene.draw()
-        self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
+        # self.scene.draw()dd
+        # self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
 
     def check_for_deadly_surfaces(self):
         """Check if the player hits something damaging"""
