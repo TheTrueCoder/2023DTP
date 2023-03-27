@@ -212,7 +212,7 @@ class TheGame(arcade.Window):
 
         self.check_for_next_level()
 
-        # print(self.player_sprite.center_y)
+        # self.play_walking_sfx()
         
 
     def on_draw(self):
@@ -223,7 +223,7 @@ class TheGame(arcade.Window):
         self.camera.use()
 
         self.scene[LAYER_NAME_PICKUPS].update_animation()
-        # print(self.scene[LAYER_NAME_PLATFORMS])
+
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
         # self.scene.draw()dd
@@ -273,6 +273,23 @@ class TheGame(arcade.Window):
             if len(LEVELS)-1 > self.current_level_index:
                 self.current_level_index += 1
             self.setup()
+
+    def play_walking_sfx(self):
+        """
+        Play a sound effect corresponding
+        to the surface the player is walking on.
+        """
+        # Find the tiles that the player is standing on.
+        tiles_touching = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene[LAYER_NAME_PLATFORMS]
+        )
+        print(tiles_touching)
+        ground_type: str = None
+        for tile in tiles_touching:
+            ground_type = tile.properties[PROPERTY_GROUND_TYPE]
+
+        if self.player_sprite.change_x != 0 and ground_type != None:
+            print(ground_type)
 
     def process_keychange(self):
         """
