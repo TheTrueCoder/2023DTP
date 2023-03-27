@@ -20,7 +20,7 @@ GRAVITY = 0.5
 # PLAYER
 # Movement speed
 PLAYER_MOVEMENT_SPEED = 7
-PLAYER_JUMP_SPEED = 15
+PLAYER_JUMP_SPEED = 12
 # Player size
 PLAYER_SCALING = 4
 # Starting location with coordinates in the format (X, Y).
@@ -34,6 +34,16 @@ LEVELS = [
     'maps/2_JungleLevel.tmx',
     'maps/3_CaveLevel.tmx',
 ]
+
+# Map scale values by level
+MAP_SCALE = [
+    3,
+    4,
+    4,
+]
+
+# Custom property keys
+PROPERTY_GROUND_TYPE = "ground_type"
 
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
@@ -116,7 +126,7 @@ class TheGame(arcade.Window):
         }
 
         # Load tiled map
-        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        self.tile_map = arcade.load_tilemap(map_name, MAP_SCALE[self.current_level_index], layer_options)
 
         # Can be used to obtain custom properties on the map.
         # print(self.tile_map.properties)
