@@ -204,6 +204,9 @@ class TheGame(arcade.Window):
         # Move the player with the physics engine.
         self.physics_engine.update()
 
+        # Update player animation
+        self.player_sprite.update_animation(delta_time)
+
         # Check if the player hits something deadly.
         self.check_for_deadly_surfaces()
 
