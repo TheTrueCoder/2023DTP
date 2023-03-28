@@ -1,6 +1,7 @@
 import arcade
 from typing import List
 from os.path import join
+from math import floor
 
 # ANIMATION_FRAMERATE = 8
 
@@ -126,7 +127,7 @@ class PlayerCharacter(arcade.Sprite):
         # Progress the animation frame unless
         # it's the last one in the animation.
         if self.sequence_frame < animation_frames:
-            self.sequence_frame = round(self.current_frame)
+            self.sequence_frame = floor(self.current_frame)
         
         # When the time for the full animation and
         # the wait time has passed, restart the animation.
