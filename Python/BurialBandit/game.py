@@ -11,6 +11,9 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 SCREEN_TITLE = "Burial Bandit"
 
+# Performance logging
+PERF_LOG_FPS = False
+
 # Scaling
 TILE_SCALING = 3
 
@@ -205,6 +208,11 @@ class TheGame(arcade.Window):
         self.keys_to_pick_up = len(self.scene[LAYER_NAME_PICKUPS])
         # print("Initial keys picked up: "+str(self.keys_picked_up))
 
+        # PERFORMANCE MEASUREMENT
+        # Needed to get the game framerate.
+        if PERF_LOG_FPS:
+            arcade.enable_timings()
+
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -241,6 +249,11 @@ class TheGame(arcade.Window):
         self.scene.draw(filter = arcade.gl.NEAREST)
 
         # self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
+
+        # Log the framerate of the game
+        # to help diagnose performance issues.
+        if PERF_LOG_FPS:
+            print(arcade.get_fps())
 
     def check_for_deadly_surfaces(self):
         """Check if the player hits something damaging"""
