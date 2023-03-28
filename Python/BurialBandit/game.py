@@ -27,6 +27,10 @@ LAYER_NAME_PLAYER = "Player"
 PLAYER_MOVEMENT_SPEED = 7
 PLAYER_JUMP_SPEED = 12
 
+# The number of lives the player
+# has at the start of the game.
+PLAYER_INITIAL_LIVES = 3
+
 # Player size
 PLAYER_SCALING = 4
 
@@ -89,15 +93,20 @@ class TheGame(arcade.Window):
 
     # Holds the current input values
     inputs = None
-    
-    # Keys
-    keys_picked_up = 0
 
     # Level index
     current_level_index = 0
 
     # Starting point
     player_start_location: arcade.Point = None
+
+    # GAMEPLAY
+    # Keys
+    keys_picked_up = 0
+
+    # Set lives to the initial value.
+    # This is not present in the setup function because I want the health to persist through all levels
+    lives = PLAYER_INITIAL_LIVES
 
     def __init__(self) -> None:
 
@@ -201,17 +210,18 @@ class TheGame(arcade.Window):
             sound.stop(sound.play(0))
         # END LOAD SOUNDS
 
+        # PERFORMANCE MEASUREMENT
+        # Needed to get the game framerate.
+        if PERF_LOG_FPS:
+            arcade.enable_timings()
+        # END PERFORMANCE MEASUREMENT
+
         # GAMEPLAY VALUES
         # Set Keys picked up to none.
         self.keys_picked_up = 0
         # Get the number of keys placed on the pickup layer.
         self.keys_to_pick_up = len(self.scene[LAYER_NAME_PICKUPS])
-        # print("Initial keys picked up: "+str(self.keys_picked_up))
 
-        # PERFORMANCE MEASUREMENT
-        # Needed to get the game framerate.
-        if PERF_LOG_FPS:
-            arcade.enable_timings()
 
 
     def on_update(self, delta_time):
