@@ -239,7 +239,7 @@ class TheGame(arcade.Window):
 
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
-        # self.scene.draw()dd
+
         # self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
 
     def check_for_deadly_surfaces(self):
@@ -270,9 +270,6 @@ class TheGame(arcade.Window):
             pickup.remove_from_sprite_lists()
             # Add to the key counter
             self.keys_picked_up += 1
-            # Play a sound
-            # arcade.play_sound(self.collect_coin_sound)
-            # print("Keys picked up: "+str(self.keys_picked_up))
 
     def check_for_next_level(self):
         """When the player reaches the end of the level,
@@ -312,7 +309,6 @@ class TheGame(arcade.Window):
         # Where the player will be on the next
         # physics update if the change goes ahead.
         anticipated_position = self.player_sprite.center_x + self.player_sprite.change_x
-        print("anticipated_position", anticipated_position)
         # Stop the player at the left side of the map.
         if self.inputs.left_pressed and anticipated_position <= PLAYER_X_STOP_BUFFER:
             self.player_sprite.change_x = 0
