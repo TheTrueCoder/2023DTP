@@ -188,13 +188,6 @@
 1593,1594,1589,1594,1589,1596,1597,1586,1587,1589,1594,1589,837,838,230,231,230,231,230,231,166,167,166,167,166,167,166,167,166,167,166,167,166,167,166,167,166,166,167,166
 </data>
  </layer>
- <objectgroup id="12" name="Plats" visible="0">
-  <object id="7" x="0" y="288" width="142.903" height="255.344"/>
-  <object id="8" x="0" y="80" width="288" height="208"/>
-  <object id="9" x="224" y="368" width="416" height="272"/>
-  <object id="10" x="0" y="608" width="224" height="32"/>
-  <object id="11" x="192" y="368" width="32" height="32"/>
- </objectgroup>
  <objectgroup id="10" name="Pickups">
   <object id="3" gid="33" x="432" y="352" width="32" height="32"/>
  </objectgroup>
