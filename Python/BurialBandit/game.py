@@ -18,15 +18,21 @@ TILE_SCALING = 3
 GRAVITY = 0.5
 
 # PLAYER
+LAYER_NAME_PLAYER = "Player"
+
 # Movement speed
 PLAYER_MOVEMENT_SPEED = 7
 PLAYER_JUMP_SPEED = 12
+
 # Player size
 PLAYER_SCALING = 4
+
 # Starting location with coordinates in the format (X, Y).
-# PLAYER_START_LOCATION = (1024, 1024)
 PLAYER_START_LOCATION = (64, 128)
-LAYER_NAME_PLAYER = "Player"
+
+# The number of pixels distance from the absolute ends of the map that the player will be stopped at.
+PLAYER_X_STOP_BUFFER = 64
+
 
 # LEVELS
 LEVELS = [
@@ -145,6 +151,8 @@ class TheGame(arcade.Window):
             self.player_start_location = self.tile_map.object_lists[LAYER_NAME_SPAWN_LOCATION][0].shape
         else:
             self.player_start_location = PLAYER_START_LOCATION
+
+        self.map_width_px = self.tile_map.width * self.tile_map.tile_width * MAP_SCALE[self.current_level_index]
         # END MAP LOAD
 
 
@@ -200,6 +208,8 @@ class TheGame(arcade.Window):
 
     def on_update(self, delta_time):
         """Movement and game logic"""
+
+        self.stop_player_at_ends()
 
         # Move the player with the physics engine.
         self.physics_engine.update()
@@ -293,6 +303,23 @@ class TheGame(arcade.Window):
 
         if self.player_sprite.change_x != 0 and ground_type != None:
             print(ground_type)
+
+    def stop_player_at_ends(self):
+        """
+        Stop the player walking off the ends of the level.
+        Call this before the physics update.
+        """
+        # Where the player will be on the next
+        # physics update if the change goes ahead.
+        anticipated_position = self.player_sprite.center_x + self.player_sprite.change_x
+        print("anticipated_position", anticipated_position)
+        # Stop the player at the left side of the map.
+        if self.inputs.left_pressed and anticipated_position <= PLAYER_X_STOP_BUFFER:
+            self.player_sprite.change_x = 0
+        # Stop the player on the right side of the map.
+        elif self.inputs.right_pressed and anticipated_position >= self.map_width_px - PLAYER_X_STOP_BUFFER:
+            self.player_sprite.change_x = 0
+        
 
     def process_keychange(self):
         """
