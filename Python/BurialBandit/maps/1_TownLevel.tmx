@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="70" height="20" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#4186c2" nextlayerid="15" nextobjectid="34">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="70" height="20" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#4186c2" nextlayerid="15" nextobjectid="38">
  <tileset firstgid="1" source="../assets/TownPlatformer/VillageTerrain.tsx"/>
  <tileset firstgid="257" source="../assets/TownPlatformer/VillageProps.tsx"/>
  <tileset firstgid="1281" source="../assets/ItemsAndTraps/ItemsAndTraps.tsx"/>
  <tileset firstgid="1288" source="../assets/wood_set/Ladders.tsx"/>
  <tileset firstgid="1292" source="../assets/pickups/AnimatedPickups.tsx"/>
  <objectgroup id="12" name="FarBG"/>
- <objectgroup id="11" name="TreesBG"/>
+ <objectgroup id="11" name="MidBG"/>
  <layer id="6" name="Background" width="70" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -155,8 +155,20 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="13" name="Spawn Location">
-  <object id="29" x="128" y="224">
+ <objectgroup id="13" name="Checkpoints">
+  <object id="29" name="Start" x="128" y="224">
+   <point/>
+  </object>
+  <object id="34" name="1" x="568" y="260">
+   <point/>
+  </object>
+  <object id="35" name="2" x="892" y="244.667">
+   <point/>
+  </object>
+  <object id="36" name="3" x="1055.33" y="274">
+   <point/>
+  </object>
+  <object id="37" name="4" x="1358.67" y="268.667">
    <point/>
   </object>
  </objectgroup>

@@ -36,6 +36,8 @@ PLAYER_SCALING = 4
 
 # Starting location with coordinates in the format (X, Y).
 PLAYER_START_LOCATION = (64, 128)
+# How close you need to be to a checkpoint to activate it.
+CHECKPOINT_TRIGGER_DISTANCE = 64
 
 # The number of pixels distance from the absolute ends of the map that the player will be stopped at.
 PLAYER_X_STOP_BUFFER = 64
@@ -66,7 +68,7 @@ LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_DONT_TOUCH = "Don't Touch"
 LAYER_NAME_NEXT_LEVEL = "Next Level"
 LAYER_NAME_LADDERS = "Ladders"
-LAYER_NAME_SPAWN_LOCATION = "Spawn Location"
+LAYER_NAME_CHECKPOINTS = "Checkpoints"
 
 class TheGame(arcade.Window):
     """
@@ -97,16 +99,16 @@ class TheGame(arcade.Window):
     # Level index
     current_level_index = 0
 
-    # Starting point
-    player_start_location: arcade.Point = None
+    # Current checkpoint
+    player_checkpoint_location: arcade.Point = None
+    player_checkpoint_index: int = 0
 
     # GAMEPLAY
     # Keys
     keys_picked_up = 0
 
-    # Set lives to the initial value.
-    # This is not present in the setup function because I want the health to persist through all levels
-    lives = PLAYER_INITIAL_LIVES
+    # Lives
+    lives = 0
 
     def __init__(self) -> None:
 
@@ -157,12 +159,9 @@ class TheGame(arcade.Window):
             arcade.set_background_color(self.tile_map.background_color)
 
         # Get the player start location from the tiled map file.
-        # Uses a point object on the "Spawn Location" layer
-        # to define the location.
-        if LAYER_NAME_SPAWN_LOCATION in self.tile_map.object_lists.keys():
-            self.player_start_location = self.tile_map.object_lists[LAYER_NAME_SPAWN_LOCATION][0].shape
-        else:
-            self.player_start_location = PLAYER_START_LOCATION
+        # This is done by just going to the first checkpoint.
+        self.player_checkpoint_index = 0
+        self.player_checkpoint_location = self.tile_map.object_lists[LAYER_NAME_CHECKPOINTS][self.player_checkpoint_index].shape
 
         self.map_width_px = self.tile_map.width * self.tile_map.tile_width * MAP_SCALE[self.current_level_index]
         # END MAP LOAD
@@ -178,8 +177,8 @@ class TheGame(arcade.Window):
         # Make the player character object and
         # place them at the start of the level.
         self.player_sprite = player.PlayerCharacter(PLAYER_SCALING)
-        self.player_sprite.center_x = self.player_start_location[0]
-        self.player_sprite.center_y = self.player_start_location[1]
+        self.player_sprite.center_x = self.player_checkpoint_location[0]
+        self.player_sprite.center_y = self.player_checkpoint_location[1]
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Create the physics engine to let the player move.
@@ -222,6 +221,8 @@ class TheGame(arcade.Window):
         # Get the number of keys placed on the pickup layer.
         self.keys_to_pick_up = len(self.scene[LAYER_NAME_PICKUPS])
 
+        # Set lives to the max value
+        self.lives = PLAYER_INITIAL_LIVES
 
 
     def on_update(self, delta_time):
@@ -244,6 +245,8 @@ class TheGame(arcade.Window):
         self.check_for_next_level()
 
         # self.play_walking_sfx()
+
+        self.update_checkpoints()
         
 
     def on_draw(self):
@@ -273,8 +276,8 @@ class TheGame(arcade.Window):
         ):
             self.player_sprite.change_x = 0
             self.player_sprite.change_y = 0
-            self.player_sprite.center_x = self.player_start_location[0]
-            self.player_sprite.center_y = self.player_start_location[1]
+            self.player_sprite.center_x = self.player_checkpoint_location[0]
+            self.player_sprite.center_y = self.player_checkpoint_location[1]
 
     def check_for_pickup_collision(self):
         """Collect keys when the player walks into them."""
@@ -306,6 +309,28 @@ class TheGame(arcade.Window):
             if len(LEVELS)-1 > self.current_level_index:
                 self.current_level_index += 1
             self.setup()
+
+    def update_checkpoints(self):
+        """
+        When the player comes within proximity of one of the
+        checkpoints and it is of a higher index then the previous
+        one they activated, that will become their new checkpoint.
+        """
+        checkpoints = self.tile_map.object_lists[LAYER_NAME_CHECKPOINTS]
+        for checkpoint_index, object in enumerate(checkpoints):
+            checkpoint_location: arcade.Shape = object.shape
+            # Checks the player is both close enough to the checkpoint
+            # and has not already obtained a further progressed checkpoint.
+            if arcade.get_distance(
+                self.player_sprite.center_x, self.player_sprite.center_y,
+                checkpoint_location[0], checkpoint_location[1]
+            ) <= CHECKPOINT_TRIGGER_DISTANCE and(
+            checkpoint_index > self.player_checkpoint_index):
+                # Set the checkpoint location to
+                # the newly reached checkpoint.
+                self.player_checkpoint_index = checkpoint_index
+                self.player_checkpoint_location = checkpoint_location
+
 
     def play_walking_sfx(self):
         """

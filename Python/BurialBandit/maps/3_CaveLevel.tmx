@@ -235,7 +235,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="13" name="Spawn Location">
+ <objectgroup id="13" name="Checkpoints">
   <object id="12" x="48" y="592">
    <point/>
   </object>
