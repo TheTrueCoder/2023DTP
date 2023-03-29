@@ -147,9 +147,6 @@ class TheGame(arcade.Window):
 
         # Load tiled map
         self.tile_map = arcade.load_tilemap(map_name, MAP_SCALE[self.current_level_index], layer_options)
-
-        # Can be used to obtain custom properties on the map.
-        # print(self.tile_map.properties)
         
         # Convert Tiled map to a arcade scene with SpriteLists for each layer.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -274,10 +271,20 @@ class TheGame(arcade.Window):
             self.player_sprite,
             self.scene[LAYER_NAME_DONT_TOUCH]
         ):
-            self.player_sprite.change_x = 0
-            self.player_sprite.change_y = 0
-            self.player_sprite.center_x = self.player_checkpoint_location[0]
-            self.player_sprite.center_y = self.player_checkpoint_location[1]
+            # Take a life
+            self.lives -= 1
+            print(self.lives)
+            # If the player has lives remaining.
+            if self.lives > 0:
+                # Send player back to checkpoint
+                self.player_sprite.change_x = 0
+                self.player_sprite.change_y = 0
+                self.player_sprite.center_x = self.player_checkpoint_location[0]
+                self.player_sprite.center_y = self.player_checkpoint_location[1]
+            # If the player is out of lives.
+            else:
+                # Restart the level.
+                self.setup()
 
     def check_for_pickup_collision(self):
         """Collect keys when the player walks into them."""
