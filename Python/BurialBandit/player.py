@@ -1,5 +1,5 @@
 import arcade
-from typing import List
+from typing import List, Dict
 from os.path import join
 from math import floor
 from pyglet.media import Player
@@ -83,7 +83,7 @@ class PlayerCharacter(arcade.Sprite):
     previous_ground_type: str = None
 
 
-    def __init__(self, character_scaling: int = 1, sound_library: dict = {}):
+    def __init__(self, character_scaling: int = 1, sound_library: Dict[str, arcade.Sound] = {}):
         # Initialise the parent
         super().__init__(scale=character_scaling)
 
@@ -128,31 +128,34 @@ class PlayerCharacter(arcade.Sprite):
             self.facing_direction = LEFT_FACING
         elif self.change_x > 0:
             self.facing_direction = RIGHT_FACING
-
+        print("1:", self.sequence_frame)
         self.animation_selection()
 
         # Get animation attributes
         animation_frames = ANIMATIONS_METADATA[self.current_animation]['length'] -1
         wait_frames = ANIMATIONS_METADATA[self.current_animation]['wait']
         framerate = ANIMATIONS_METADATA[self.current_animation]['framerate']
-
+        print("2:", self.sequence_frame)
+        
         # Progress the animation frame unless
         # it's the last one in the animation.
-        if self.sequence_frame < animation_frames:
-            self.sequence_frame = floor(self.current_frame)
+        seq_frame = floor(self.current_frame)
+        if seq_frame < animation_frames:
+            self.sequence_frame = seq_frame
         
+        print("3:", self.sequence_frame)
         # When the time for the full animation and
         # the wait time has passed, restart the animation.
         if self.current_frame >= animation_frames + wait_frames:
             self.current_frame = 0.0
             self.sequence_frame = 0
-
+        print("4:", self.sequence_frame)
         # Play current animation frame.
         self.texture = self.animations[self.current_animation][self.sequence_frame][self.facing_direction]
-
+        print("self.current_frame1", self.current_frame)
         # Progress to the next frame
         self.current_frame += delta_time * framerate
-
+        print("self.current_frame2", self.current_frame)
 
     def update_sfx(self, sound_layer: arcade.SpriteList):
         """
@@ -174,7 +177,7 @@ class PlayerCharacter(arcade.Sprite):
                 if self.surface_sfx_player != None:
                     arcade.stop_sound(self.surface_sfx_player)
                 self.surface_sfx_player = (
-                    self.sounds[f"{ground_type}_surface"].play(loop=True)
+                    self.sounds[f"{ground_type}_surface"].play(volume=0.7, loop=True)
                 )
             self.previous_ground_type = ground_type
 

@@ -246,3 +246,7 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,python
 *.tiled-session
+
+Python/BurialBandit/assets/Audio/EndSequence/EndSequence.aup3-shm
+
+Python/BurialBandit/assets/Audio/EndSequence/EndSequence.aup3-wal
