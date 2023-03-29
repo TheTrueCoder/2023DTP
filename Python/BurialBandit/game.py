@@ -1,5 +1,6 @@
 import arcade
 import arcade.gl
+from typing import Dict
 
 # Internal modules
 import player
@@ -14,9 +15,6 @@ SCREEN_TITLE = "Burial Bandit"
 # Performance logging
 PERF_LOG_FPS = False
 
-# Scaling
-TILE_SCALING = 3
-
 # Physics
 GRAVITY = 0.5
 
@@ -25,14 +23,14 @@ LAYER_NAME_PLAYER = "Player"
 
 # Movement speed
 PLAYER_MOVEMENT_SPEED = 7
-PLAYER_JUMP_SPEED = 12
+PLAYER_JUMP_SPEED = 13
 
 # The number of lives the player
 # has at the start of the game.
 PLAYER_INITIAL_LIVES = 3
 
 # Player size
-PLAYER_SCALING = 4
+PLAYER_SCALING = 5
 
 # Starting location with coordinates in the format (X, Y).
 PLAYER_START_LOCATION = (64, 128)
@@ -55,7 +53,7 @@ LEVELS = [
 # Map scale values by level
 MAP_SCALE = [
     3,
-    4,
+    5,
     4,
 ]
 
@@ -85,7 +83,8 @@ class TheGame(arcade.Window):
     physics_engine = None
 
     # Holds all the sounds in the game in a dictionary.
-    sounds = {}
+    sounds: Dict[str, arcade.Sound] = {}
+    looping_song = None
 
     # Holds the player Sprite object
     player_sprite: arcade.Sprite = None
@@ -104,9 +103,13 @@ class TheGame(arcade.Window):
     player_checkpoint_location: arcade.Point = None
     player_checkpoint_index: int = 0
 
+    # Map width in game px
+    map_width_px = 0
+
     # GAMEPLAY
     # Keys
     keys_picked_up: int = 0
+    keys_to_pick_up: int = 0
 
     # Lives
     lives: int = 0
@@ -114,7 +117,7 @@ class TheGame(arcade.Window):
     def __init__(self) -> None:
 
         # Create the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
 
         arcade.set_background_color(arcade.csscolor.SKY_BLUE)
 
@@ -166,8 +169,15 @@ class TheGame(arcade.Window):
 
         # LOAD SOUNDS
         self.sounds = {
+            # Key pickup sound
             'keys_on_surface': arcade.load_sound('assets/Audio/keys_on_surface_zapsplat.mp3'),
-            'grass_surface': arcade.load_sound('assets/Audio/footsteps-in-grass-moderate-A-fesliyanstudios.mp3')
+
+            # Looping game soundtrack
+            'through_the_forest': arcade.load_sound('assets/Audio/madmakingmistery_ttf.wav', True),
+
+            # These sound effects are played when walking on surfaces.
+            'grass_surface': arcade.load_sound('assets/Audio/footsteps-in-grass-moderate-A-fesliyanstudios.mp3'),
+            'stone_surface': arcade.load_sound('assets/Audio/dress-shoes-on-Concrete-Floor-fast-pace-FesliyanStudios.mp3'),
         }
 
         # Hack to prevent lag spikes when playing
@@ -226,6 +236,10 @@ class TheGame(arcade.Window):
 
         # Set lives to the max value
         self.lives = PLAYER_INITIAL_LIVES
+        # END GAMEPLAY VALUES
+
+        # MUSIC
+        self.looping_song = self.sounds['through_the_forest'].play(.4, loop=True)
 
 
     def on_update(self, delta_time):
@@ -294,7 +308,7 @@ class TheGame(arcade.Window):
         ):
             # Take a life
             self.lives -= 1
-            print(self.lives)
+
             # If the player has lives remaining.
             if self.lives > 0:
                 # Send player back to checkpoint
@@ -334,6 +348,7 @@ class TheGame(arcade.Window):
             self.scene[LAYER_NAME_NEXT_LEVEL]
         ) and self.keys_picked_up >= self.keys_to_pick_up :
             self.keys_picked_up = 0
+            self.player_sprite.stop_sfx()
             if len(LEVELS)-1 > self.current_level_index:
                 self.current_level_index += 1
             self.setup()
@@ -459,9 +474,6 @@ class TheGame(arcade.Window):
             self.inputs.right_pressed = False
 
         self.process_keychange()
-
-
-
 
 
 # RUN GAME
