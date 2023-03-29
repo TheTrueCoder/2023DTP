@@ -178,6 +178,10 @@ class TheGame(arcade.Window):
             # These sound effects are played when walking on surfaces.
             'grass_surface': arcade.load_sound('assets/Audio/footsteps-in-grass-moderate-A-fesliyanstudios.mp3'),
             'stone_surface': arcade.load_sound('assets/Audio/dress-shoes-on-Concrete-Floor-fast-pace-FesliyanStudios.mp3'),
+
+            # End sequence
+            'end_intro': arcade.load_sound('assets/Audio/EndSequence_Intro.mp3'),
+            'end_loop': arcade.load_sound('assets/Audio/EndSequence_Looping.mp3')
         }
 
         # Hack to prevent lag spikes when playing
