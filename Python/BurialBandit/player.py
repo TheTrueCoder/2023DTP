@@ -2,6 +2,7 @@ import arcade
 from typing import List
 from os.path import join
 from math import floor
+from pyglet.media import Player
 
 # ANIMATION_FRAMERATE = 8
 
@@ -24,6 +25,9 @@ ANIMATIONS_METADATA = {
 # Names to refer to the different animations.
 ANIM_IDLE = "idle"
 ANIM_RUNNING = "running"
+
+# Custom property keys
+PROPERTY_GROUND_TYPE = "ground_type"
 
 # Name the values that represent left and right facing.
 RIGHT_FACING = 0
@@ -73,10 +77,18 @@ class PlayerCharacter(arcade.Sprite):
     previous_animation = ANIM_IDLE
     animations = {}
 
+    # Audio
+    sounds = None
+    surface_sfx_player: Player = None
+    previous_ground_type: str = None
 
-    def __init__(self, character_scaling: int = 1):
+
+    def __init__(self, character_scaling: int = 1, sound_library: dict = {}):
         # Initialise the parent
         super().__init__(scale=character_scaling)
+
+        # Save sounds
+        self.sounds = sound_library
 
         # LOAD ANIMATIONS
         for anim_name, anim_data in ANIMATIONS_METADATA.items():
@@ -140,4 +152,31 @@ class PlayerCharacter(arcade.Sprite):
 
         # Progress to the next frame
         self.current_frame += delta_time * framerate
-        
+
+
+    def update_sfx(self, sound_layer: arcade.SpriteList):
+        """
+        Play a sound effect corresponding
+        to the surface the player is walking on.
+        """
+        # Find the tiles that the player is standing on.
+        tiles_touching = arcade.check_for_collision_with_list(
+            self, sound_layer
+        )
+
+        if len(tiles_touching) == 0 or self.change_x == 0:
+            if self.surface_sfx_player != None:
+                arcade.stop_sound(self.surface_sfx_player)
+            self.previous_ground_type = None
+        else:
+            ground_type: str = tiles_touching[0].properties[PROPERTY_GROUND_TYPE]
+            if ground_type != self.previous_ground_type:
+                if self.surface_sfx_player != None:
+                    arcade.stop_sound(self.surface_sfx_player)
+                self.surface_sfx_player = (
+                    self.sounds[f"{ground_type}_surface"].play(loop=True)
+                )
+            self.previous_ground_type = ground_type
+
+    def stop_sfx(self):
+        arcade.stop_sound(self.surface_sfx_player)

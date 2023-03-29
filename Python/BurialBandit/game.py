@@ -59,9 +59,6 @@ MAP_SCALE = [
     4,
 ]
 
-# Custom property keys
-PROPERTY_GROUND_TYPE = "ground_type"
-
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
 LAYER_NAME_PICKUPS = "Pickups"
@@ -71,6 +68,7 @@ LAYER_NAME_DONT_TOUCH = "Don't Touch"
 LAYER_NAME_NEXT_LEVEL = "Next Level"
 LAYER_NAME_LADDERS = "Ladders"
 LAYER_NAME_CHECKPOINTS = "Checkpoints"
+LAYER_NAME_SOUND = "Sound"
 
 class TheGame(arcade.Window):
     """
@@ -100,7 +98,7 @@ class TheGame(arcade.Window):
     inputs: Inputs = None
 
     # Level index
-    current_level_index: int = 1
+    current_level_index: int = 0
 
     # Current checkpoint
     player_checkpoint_location: arcade.Point = None
@@ -166,6 +164,17 @@ class TheGame(arcade.Window):
         self.map_width_px = self.tile_map.width * self.tile_map.tile_width * MAP_SCALE[self.current_level_index]
         # END MAP LOAD
 
+        # LOAD SOUNDS
+        self.sounds = {
+            'keys_on_surface': arcade.load_sound('assets/Audio/keys_on_surface_zapsplat.mp3'),
+            'grass_surface': arcade.load_sound('assets/Audio/footsteps-in-grass-moderate-A-fesliyanstudios.mp3')
+        }
+
+        # Hack to prevent lag spikes when playing
+        # the sounds for the first time.
+        for sound in self.sounds.values():
+            sound.stop(sound.play(0))
+        # END LOAD SOUNDS
 
         # CREATE PLAYER CHARACTER
         # Create the list for the player sprites
@@ -176,7 +185,7 @@ class TheGame(arcade.Window):
         
         # Make the player character object and
         # place them at the start of the level.
-        self.player_sprite = player.PlayerCharacter(PLAYER_SCALING)
+        self.player_sprite = player.PlayerCharacter(PLAYER_SCALING, self.sounds)
         self.player_sprite.center_x = self.player_checkpoint_location[0]
         self.player_sprite.center_y = self.player_checkpoint_location[1]
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
@@ -202,17 +211,6 @@ class TheGame(arcade.Window):
         # Heads Up Display elements, so they stay
         # in the same place on the screen.
         self.gui_camera = arcade.Camera()
-
-        # LOAD SOUNDS
-        self.sounds = {
-            'keys_on_surface': arcade.load_sound('assets/Audio/keys_on_surface_zapsplat.mp3'),
-        }
-
-        # Hack to prevent lag spikes when playing
-        # the sounds for the first time.
-        for sound in self.sounds.values():
-            sound.stop(sound.play(0))
-        # END LOAD SOUNDS
 
         # PERFORMANCE MEASUREMENT
         # Needed to get the game framerate.
@@ -240,6 +238,7 @@ class TheGame(arcade.Window):
 
         # Update player animation
         self.player_sprite.update_animation(delta_time)
+        self.player_sprite.update_sfx(self.scene[LAYER_NAME_SOUND])
 
         # Check if the player hits something deadly.
         self.check_for_deadly_surfaces()
@@ -368,15 +367,18 @@ class TheGame(arcade.Window):
         """
         # Find the tiles that the player is standing on.
         tiles_touching = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene[LAYER_NAME_PLATFORMS]
+            self.player_sprite, self.scene[LAYER_NAME_SOUND]
         )
-        print(tiles_touching)
+
         ground_type: str = None
         for tile in tiles_touching:
             ground_type = tile.properties[PROPERTY_GROUND_TYPE]
 
-        if self.player_sprite.change_x != 0 and ground_type != None:
-            print(ground_type)
+        if (self.player_sprite.change_x != 0 and ground_type != None
+            and ground_type != self.previous_ground_type):
+            if self.surface_sfx_player != None:
+                arcade.stop_sound(self.surface_sfx_player)
+            self.surface_sfx_player = self.sounds[f"{ground_type}_surface"].play(loop=True)
 
     def stop_player_at_ends(self):
         """
