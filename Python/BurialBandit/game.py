@@ -42,6 +42,8 @@ CHECKPOINT_TRIGGER_DISTANCE = 64
 # The number of pixels distance from the absolute ends of the map that the player will be stopped at.
 PLAYER_X_STOP_BUFFER = 64
 
+# GUI
+GUI_MAIN_FONT_SIZE = 20
 
 # LEVELS
 LEVELS = [
@@ -79,25 +81,26 @@ class TheGame(arcade.Window):
     """
 
     # Tiled map data
-    tile_map = None
+    tile_map: arcade.TileMap = None
     # The arcade scene for all data from the tiled map.
-    scene = None
+    scene: arcade.Scene = None
     physics_engine = None
 
     # Holds all the sounds in the game in a dictionary.
     sounds = {}
 
     # Holds the player Sprite object
-    player_sprite = None
+    player_sprite: arcade.Sprite = None
 
     # Cameras
-    camera = None
+    camera: arcade.Camera = None
+    gui_camera: arcade.Camera = None
 
     # Holds the current input values
-    inputs = None
+    inputs: Inputs = None
 
     # Level index
-    current_level_index = 0
+    current_level_index: int = 1
 
     # Current checkpoint
     player_checkpoint_location: arcade.Point = None
@@ -105,10 +108,10 @@ class TheGame(arcade.Window):
 
     # GAMEPLAY
     # Keys
-    keys_picked_up = 0
+    keys_picked_up: int = 0
 
     # Lives
-    lives = 0
+    lives: int = 0
 
     def __init__(self) -> None:
 
@@ -189,11 +192,16 @@ class TheGame(arcade.Window):
 
         # CAMERAS
         # Make the camera that will follow the player.
-        self.camera = camera.GameCamera(self.width, self.height)
+        self.camera = camera.GameCamera()
         # Set it's start location to where the player is
         # instantly, so that it doesn't drift to the start.
         self.camera.camera_to_player(self.player_sprite, 1)
         self.camera.update()
+
+        # Static camera for the User Interface and
+        # Heads Up Display elements, so they stay
+        # in the same place on the screen.
+        self.gui_camera = arcade.Camera()
 
         # LOAD SOUNDS
         self.sounds = {
@@ -250,15 +258,29 @@ class TheGame(arcade.Window):
         """Render the screen."""
         self.clear()
 
+        # DRAW GAME WORLD
         self.camera.camera_to_player(self.player_sprite)
         self.camera.use()
 
+        # Animate the pickups like keys and gems.
         self.scene[LAYER_NAME_PICKUPS].update_animation()
 
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
 
         # self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
+
+        # DRAW GUI
+        self.gui_camera.use()
+
+        # Draw health counter
+        arcade.draw_text(
+            f"Lives {self.lives}/{PLAYER_INITIAL_LIVES}",
+            32, self.height - 32,
+            arcade.color.ROSE_RED,
+            GUI_MAIN_FONT_SIZE,
+            anchor_y = "top"
+        )
 
         # Log the framerate of the game
         # to help diagnose performance issues.
