@@ -33,8 +33,6 @@ PLAYER_INITIAL_LIVES = 3
 # Player size
 PLAYER_SCALING = 5
 
-# Starting location with coordinates in the format (X, Y).
-PLAYER_START_LOCATION = (64, 128)
 # How close you need to be to a checkpoint to activate it.
 CHECKPOINT_TRIGGER_DISTANCE = 64
 
@@ -58,6 +56,12 @@ MAP_SCALE = [
     5,
     4,
 ]
+
+# The first map that is opened (usually the start).
+MAP_START_INDEX = 0
+
+# Used to enable the End scene logic.
+FINAL_MAP_INDEX = 2
 
 # Layer Names from the tiled project
 LAYER_NAME_PLATFORMS = "Platforms"
@@ -87,6 +91,7 @@ class TheGame(arcade.Window):
 
     # Holds all the sounds in the game in a dictionary.
     sounds: Dict[str, arcade.Sound] = {}
+    # Holds the player for the background soundtrack.
     looping_song = None
 
     # Holds the player Sprite object
@@ -104,7 +109,7 @@ class TheGame(arcade.Window):
     end_sequence: EndSequence = None
 
     # Level index
-    current_level_index: int = 2
+    current_level_index: int = MAP_START_INDEX
 
     # Current checkpoint
     player_checkpoint_pos: arcade.Point = None
@@ -267,19 +272,25 @@ class TheGame(arcade.Window):
         self.lives = PLAYER_INITIAL_LIVES
         # END GAMEPLAY VALUES
 
-        # Setup end sequence for last (3rd) level
-        if self.current_level_index == 2:
+        # Setup end sequence for last (3rd) level.
+        # The end sequence has a lot of fancy animation stuff,
+        # so it is kept seperate, with the sounds and camera shared.
+        if self.current_level_index == FINAL_MAP_INDEX:
             self.end_sequence = EndSequence(
                 self.sounds,
-                self.camera
+                self.camera,
+                self.scene,
+                self.player_sprite
             )
-            self.end_sequence.start()
 
         # MUSIC
-        if self.current_level_index != 2 and self.looping_song is None:
+        # It plays the background music at start
+        # and stops it on the final level.
+        if self.current_level_index != FINAL_MAP_INDEX and self.looping_song is None:
             self.looping_song = (self.sounds['through_the_forest']
                                  .play(.4, loop=True))
-        elif self.looping_song is not None:
+        elif (self.looping_song is not None and
+                self.current_level_index == FINAL_MAP_INDEX):
             arcade.stop_sound(self.looping_song)
 
 
@@ -325,7 +336,7 @@ class TheGame(arcade.Window):
         # DRAW GUI
         self.gui_camera.use()
 
-        # Draw health counter
+        # Draw health counter in the top left of the screen.
         arcade.draw_text(
             f"Lives {self.lives}/{PLAYER_INITIAL_LIVES}",
             32, self.height - 32,
@@ -371,7 +382,7 @@ class TheGame(arcade.Window):
         if len(pickup_hit_list) > 0:
             self.sounds['keys_on_surface'].play()
             # Start end sequence
-            if self.current_level_index == 2:
+            if self.current_level_index == FINAL_MAP_INDEX:
                 self.end_sequence.start()
 
         # Loop through each key we hit (if any) and remove it
@@ -438,7 +449,7 @@ class TheGame(arcade.Window):
         """
         Updates the input's impact on gameplay.
         """
-        # Process up/down
+        # Process jumping and moving up/down ladders.
         if self.inputs.up_pressed and not self.inputs.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
@@ -448,19 +459,20 @@ class TheGame(arcade.Window):
             ):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 self.inputs.jump_needs_reset = True
-                # arcade.play_sound(self.jump_sound) # NOTE: Add sounds later
+                # arcade.play_sound(self.jump_sound)
         elif self.inputs.down_pressed and not self.inputs.up_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
 
-        # Process up/down when on a ladder and no movement
+        # Cancel out movement on ladders when
+        # both up and down are pressed.
         if self.physics_engine.is_on_ladder():
             if not self.inputs.up_pressed and not self.inputs.down_pressed:
                 self.player_sprite.change_y = 0
             elif self.inputs.up_pressed and self.inputs.down_pressed:
                 self.player_sprite.change_y = 0
 
-        # Process left/right
+        # Walking laft and right.
         if self.inputs.right_pressed and not self.inputs.left_pressed:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
         elif self.inputs.left_pressed and not self.inputs.right_pressed:
@@ -502,7 +514,6 @@ class TheGame(arcade.Window):
 # RUN GAME
 # Run the game if the file is being run
 if __name__ == "__main__":
-
     window = TheGame()
     window.setup()
     arcade.run()

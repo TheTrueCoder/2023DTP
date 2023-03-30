@@ -11,6 +11,8 @@ LOOP_START_WAIT_SECS = 14
 
 DESTRUCTION_AUDIO_VOLUME = 2
 
+LAYER_NAME_END_TRIGGER = "EndTrigger"
+
 class EndSequence():
     """Does the fancy stuff for the final game sequence."""
     lapsed_time = 0.0
@@ -19,6 +21,8 @@ class EndSequence():
 
     sounds = None
     camera = None
+    scene = None
+    player = None
 
     # Players
     loop_player = None
@@ -26,9 +30,13 @@ class EndSequence():
     last_shake_time = 0
 
     def __init__(self, sound_library: Dict[str, arcade.Sound],
-        camera: arcade.Camera) -> None:
+        camera: arcade.Camera,
+        scene: arcade.Scene,
+        player: arcade.Sprite) -> None:
         self.sounds = sound_library
         self.camera = camera
+        self.scene = scene
+        self.player = player
 
     def start(self):
         """
@@ -37,7 +45,13 @@ class EndSequence():
         self.is_active = True
         self.sounds['end_intro'].play(DESTRUCTION_AUDIO_VOLUME)
 
-    
+    def stop(self):
+        """
+        End the action sequence.
+        """
+        self.is_active = False
+        if self.loop_player is not None:
+            arcade.stop_sound(self.loop_player)
 
     def on_update(self, delta_time = 1/60):
         """
@@ -56,7 +70,7 @@ class EndSequence():
                     DESTRUCTION_AUDIO_VOLUME,
                     loop=True
                     )
-            
+
             # Shake the camera every SHAKE_FREQUENCY_SECS seconds.
             if self.lapsed_time - self.last_shake_time >= SHAKE_FREQUENCY_SECS:
                 start_velocity = arcade.rand_on_circle(
@@ -70,3 +84,9 @@ class EndSequence():
                 )
 
                 self.last_shake_time = self.lapsed_time
+
+            if arcade.check_for_collision_with_list(
+                self.player,
+                self.scene[LAYER_NAME_END_TRIGGER]
+            ):
+                self.stop()
