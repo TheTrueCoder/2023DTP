@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="100" height="34" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="13">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="100" height="34" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="16">
  <properties>
   <property name="key_no" type="int" value="3"/>
  </properties>
@@ -9,6 +9,12 @@
  <tileset firstgid="36" source="../assets/FanatasyCaves/FantasyCave_Tiles.tsx"/>
  <tileset firstgid="4132" source="../assets/wood_set/Ladders.tsx"/>
  <tileset firstgid="4136" source="../assets/Audio/TriggerTiles.tsx"/>
+ <tileset firstgid="4140" source="../assets/FanatasyCaves/CaveBackgrounds.tsx"/>
+ <objectgroup id="16" name="FarBG"/>
+ <objectgroup id="15" name="MidBG">
+  <object id="13" gid="4143" x="-32" y="544" width="960" height="480"/>
+  <object id="15" gid="4142" x="368" y="512" width="960" height="480"/>
+ </objectgroup>
  <layer id="6" name="Background" width="100" height="34">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

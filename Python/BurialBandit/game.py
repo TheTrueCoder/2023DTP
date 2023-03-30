@@ -273,6 +273,7 @@ class TheGame(arcade.Window):
                 self.sounds,
                 self.camera
             )
+            self.end_sequence.start()
 
         # MUSIC
         if self.current_level_index != 2 and self.looping_song is None:
@@ -369,6 +370,7 @@ class TheGame(arcade.Window):
 
         if len(pickup_hit_list) > 0:
             self.sounds['keys_on_surface'].play()
+            # Start end sequence
             if self.current_level_index == 2:
                 self.end_sequence.start()
 

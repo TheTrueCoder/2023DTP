@@ -1,9 +1,10 @@
 from typing import Dict
 import arcade
+from pyglet.math import Vec2
 
-SHAKE_FREQUENCY_SECS = 3
-SHAKE_MAGNITUDE = 16
-SHAKE_SPEED = 1.5
+SHAKE_FREQUENCY_SECS = 0.15
+SHAKE_MAGNITUDE = 5
+SHAKE_SPEED = 0.5
 SHAKE_DAMPING = 0.9
 
 LOOP_START_WAIT_SECS = 14
@@ -30,10 +31,20 @@ class EndSequence():
         self.camera = camera
 
     def start(self):
+        """
+        Start the action sequence.
+        """
         self.is_active = True
         self.sounds['end_intro'].play(DESTRUCTION_AUDIO_VOLUME)
 
+    
+
     def on_update(self, delta_time = 1/60):
+        """
+        Called in the main on_update function to play the
+        sequence of events for the final action sequence.
+        """
+
         if self.is_active:
             self.lapsed_time += delta_time
             # print(self.lapsed_time)
@@ -47,12 +58,15 @@ class EndSequence():
                     )
             
             # Shake the camera every SHAKE_FREQUENCY_SECS seconds.
-            # if self.lapsed_time - self.last_shake_time >= SHAKE_FREQUENCY_SECS:
-            #     self.camera.shake(
-            #         arcade.rand_on_circle(
-            #             arcade.Vector((0, 0)),
-            #             SHAKE_MAGNITUDE
-            #         ),
-            #         SHAKE_SPEED,
-            #         SHAKE_DAMPING
-            #     )
+            if self.lapsed_time - self.last_shake_time >= SHAKE_FREQUENCY_SECS:
+                start_velocity = arcade.rand_on_circle(
+                    (0, 0),
+                    SHAKE_MAGNITUDE
+                )
+                self.camera.shake(
+                    Vec2(start_velocity[0], start_velocity[1]),
+                    SHAKE_SPEED,
+                    SHAKE_DAMPING
+                )
+
+                self.last_shake_time = self.lapsed_time
