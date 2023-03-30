@@ -6,6 +6,7 @@ import arcade.gl
 import player
 import camera
 from inputs import Inputs
+from end_sequence import EndSequence
 
 # App parameters
 SCREEN_WIDTH = 1000
@@ -98,8 +99,12 @@ class TheGame(arcade.Window):
     # Holds the current input values
     inputs: Inputs = None
 
+    # This object handles the unique effects
+    # done in the game finale action sequence.
+    end_sequence: EndSequence = None
+
     # Level index
-    current_level_index: int = 0
+    current_level_index: int = 2
 
     # Current checkpoint
     player_checkpoint_pos: arcade.Point = None
@@ -120,7 +125,7 @@ class TheGame(arcade.Window):
 
         # Create the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT,
-                         SCREEN_TITLE, fullscreen=True)
+                         SCREEN_TITLE, fullscreen=False)
 
         arcade.set_background_color(arcade.csscolor.SKY_BLUE)
 
@@ -262,9 +267,20 @@ class TheGame(arcade.Window):
         self.lives = PLAYER_INITIAL_LIVES
         # END GAMEPLAY VALUES
 
+        # Setup end sequence for last (3rd) level
+        if self.current_level_index == 2:
+            self.end_sequence = EndSequence(
+                self.sounds,
+                self.camera
+            )
+
         # MUSIC
-        self.looping_song = self.sounds['through_the_forest'].play(.4,
-                                                                   loop=True)
+        if self.current_level_index != 2 and self.looping_song is None:
+            self.looping_song = (self.sounds['through_the_forest']
+                                 .play(.4, loop=True))
+        elif self.looping_song is not None:
+            arcade.stop_sound(self.looping_song)
+
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -286,9 +302,10 @@ class TheGame(arcade.Window):
 
         self.check_for_next_level()
 
-        # self.play_walking_sfx()
-
         self.update_checkpoints()
+
+        if self.end_sequence is not None:
+            self.end_sequence.on_update(delta_time)
 
     def on_draw(self):
         """Render the screen."""
@@ -352,6 +369,8 @@ class TheGame(arcade.Window):
 
         if len(pickup_hit_list) > 0:
             self.sounds['keys_on_surface'].play()
+            if self.current_level_index == 2:
+                self.end_sequence.start()
 
         # Loop through each key we hit (if any) and remove it
         for pickup in pickup_hit_list:
