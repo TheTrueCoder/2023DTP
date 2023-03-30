@@ -286,13 +286,13 @@ class TheGame(arcade.Window):
         # MUSIC
         # It plays the background music at start
         # and stops it on the final level.
-        if self.current_level_index != FINAL_MAP_INDEX and self.looping_song is None:
+        if (self.current_level_index != FINAL_MAP_INDEX and
+                self.looping_song is None):
             self.looping_song = (self.sounds['through_the_forest']
                                  .play(.4, loop=True))
         elif (self.looping_song is not None and
                 self.current_level_index == FINAL_MAP_INDEX):
             arcade.stop_sound(self.looping_song)
-
 
     def on_update(self, delta_time):
         """Movement and game logic"""

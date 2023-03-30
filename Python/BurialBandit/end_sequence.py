@@ -13,6 +13,7 @@ DESTRUCTION_AUDIO_VOLUME = 2
 
 LAYER_NAME_END_TRIGGER = "EndTrigger"
 
+
 class EndSequence():
     """Does the fancy stuff for the final game sequence."""
     lapsed_time = 0.0
@@ -30,9 +31,9 @@ class EndSequence():
     last_shake_time = 0
 
     def __init__(self, sound_library: Dict[str, arcade.Sound],
-        camera: arcade.Camera,
-        scene: arcade.Scene,
-        player: arcade.Sprite) -> None:
+                 camera: arcade.Camera,
+                 scene: arcade.Scene,
+                 player: arcade.Sprite) -> None:
         self.sounds = sound_library
         self.camera = camera
         self.scene = scene
@@ -53,7 +54,7 @@ class EndSequence():
         if self.loop_player is not None:
             arcade.stop_sound(self.loop_player)
 
-    def on_update(self, delta_time = 1/60):
+    def on_update(self, delta_time=1/60):
         """
         Called in the main on_update function to play the
         sequence of events for the final action sequence.
