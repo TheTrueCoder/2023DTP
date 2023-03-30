@@ -163,7 +163,8 @@ class TheGame(arcade.Window):
         self.player_checkpoint_index = 0
         self.player_checkpoint_location = self.tile_map.object_lists[LAYER_NAME_CHECKPOINTS][self.player_checkpoint_index].shape
 
-        self.map_width_px = self.tile_map.width * self.tile_map.tile_width * MAP_SCALE[self.current_level_index]
+        self.tile_width_px = self.tile_map.tile_width * MAP_SCALE[self.current_level_index]
+        self.map_width_px = self.tile_map.width * self.tile_width_px
         # END MAP LOAD
 
 
@@ -265,6 +266,8 @@ class TheGame(arcade.Window):
         # Animate the pickups like keys and gems.
         self.scene[LAYER_NAME_PICKUPS].update_animation()
 
+        # Update the parallax effect
+        # self.update_parallax()
         # Draw with nearest pixel sampling to get that pixelated look.
         self.scene.draw(filter = arcade.gl.NEAREST)
 
@@ -338,6 +341,37 @@ class TheGame(arcade.Window):
             if len(LEVELS)-1 > self.current_level_index:
                 self.current_level_index += 1
             self.setup()
+
+    def update_parallax(self):
+        camera_pos = self.camera.position
+        for layer in self.tile_map.tiled_map.layers:
+            parallax_factor = layer.parallax_factor
+            # Only do the parallax computation if the layer
+            # has a parallax factor, as it can be expensive
+            # to move lots of small sprites.
+            if all(factor == 1 for factor in parallax_factor) == False:
+                try:
+                    current_position = self.scene[layer.name].center
+                except ZeroDivisionError:
+                    current_position = (0, 0)
+
+                layer_transform = []
+                for i in range(len(parallax_factor)):
+                    tile_position = (camera_pos[i] + self.initial_camera_pos[i]) / self.tile_width_px
+                    parallax_position = tile_position * parallax_factor[i]
+                    layer_transform.append(
+                         parallax_position - current_position[i]
+                    )
+                    print("current_position[i]", current_position[i])
+                    print("parallax_position", parallax_position)
+                print(layer_transform)
+                self.scene[layer.name].move(
+                    layer_transform[0],
+                    layer_transform[1]
+                )
+                # self.scene[layer.name].move(1,0)
+
+                
 
     def update_checkpoints(self):
         """
