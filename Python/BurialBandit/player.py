@@ -35,8 +35,8 @@ LEFT_FACING = 1
 
 
 def load_image_sequence(folder: str, number_of_frames: int,
-    start_frame: int = 1,
-    file_extension = ".png") -> List[List[arcade.Sprite]]:
+                        start_frame: int = 1,
+                        file_extension=".png") -> List[List[arcade.Sprite]]:
     """
     Loads a sequence of images as texture pairs into a list
     to be used for animation.
@@ -82,8 +82,9 @@ class PlayerCharacter(arcade.Sprite):
     surface_sfx_player: Player = None
     previous_ground_type: str = None
 
-
-    def __init__(self, character_scaling: int = 1, sound_library: Dict[str, arcade.Sound] = {}):
+    def __init__(self,
+                 character_scaling: int = 1,
+                 sound_library: Dict[str, arcade.Sound] = {}):
         # Initialise the parent
         super().__init__(scale=character_scaling)
 
@@ -92,7 +93,8 @@ class PlayerCharacter(arcade.Sprite):
 
         # LOAD ANIMATIONS
         for anim_name, anim_data in ANIMATIONS_METADATA.items():
-            self.animations[anim_name] = load_image_sequence(anim_data['folder'], anim_data['length'])
+            self.animations[anim_name] = load_image_sequence(
+                anim_data['folder'], anim_data['length'])
 
         # Set initial sprite
         self.texture = self.animations[ANIM_IDLE][0][self.facing_direction]
@@ -113,49 +115,51 @@ class PlayerCharacter(arcade.Sprite):
         if self.current_animation != self.previous_animation:
             self.current_frame = 0.0
             self.sequence_frame = 0
-        
+
         self.previous_animation = self.current_animation
 
     def update_animation(self, delta_time: float = 1 / 60):
         """
-        Updates the animation state of the player, accounting for the passed time.
+        Updates the animation state of the player,
+        accounting for the passed time.
 
         delta_time: Time passed since last frame.
         """
-        
+
         # Flip the character to face the direction they're walking.
         if self.change_x < 0:
             self.facing_direction = LEFT_FACING
         elif self.change_x > 0:
             self.facing_direction = RIGHT_FACING
-        print("1:", self.sequence_frame)
+
+        # Select the animation
         self.animation_selection()
 
         # Get animation attributes
-        animation_frames = ANIMATIONS_METADATA[self.current_animation]['length'] -1
+        animation_frames = (ANIMATIONS_METADATA
+                            [self.current_animation]['length'] - 1)
         wait_frames = ANIMATIONS_METADATA[self.current_animation]['wait']
         framerate = ANIMATIONS_METADATA[self.current_animation]['framerate']
-        print("2:", self.sequence_frame)
-        
+
         # Progress the animation frame unless
         # it's the last one in the animation.
         seq_frame = floor(self.current_frame)
         if seq_frame < animation_frames:
             self.sequence_frame = seq_frame
-        
-        print("3:", self.sequence_frame)
+
         # When the time for the full animation and
         # the wait time has passed, restart the animation.
         if self.current_frame >= animation_frames + wait_frames:
             self.current_frame = 0.0
             self.sequence_frame = 0
-        print("4:", self.sequence_frame)
+
         # Play current animation frame.
-        self.texture = self.animations[self.current_animation][self.sequence_frame][self.facing_direction]
-        print("self.current_frame1", self.current_frame)
+        self.texture = (self.animations
+                        [self.current_animation]
+                        [self.sequence_frame]
+                        [self.facing_direction])
         # Progress to the next frame
         self.current_frame += delta_time * framerate
-        print("self.current_frame2", self.current_frame)
 
     def update_sfx(self, sound_layer: arcade.SpriteList):
         """
@@ -168,18 +172,21 @@ class PlayerCharacter(arcade.Sprite):
         )
 
         if len(tiles_touching) == 0 or self.change_x == 0:
-            if self.surface_sfx_player != None:
+            if self.surface_sfx_player is not None:
                 arcade.stop_sound(self.surface_sfx_player)
             self.previous_ground_type = None
         else:
-            ground_type: str = tiles_touching[0].properties[PROPERTY_GROUND_TYPE]
+            ground_type: str = (tiles_touching[0]
+                                .properties[PROPERTY_GROUND_TYPE])
             if ground_type != self.previous_ground_type:
-                if self.surface_sfx_player != None:
+                if self.surface_sfx_player is not None:
                     arcade.stop_sound(self.surface_sfx_player)
                 self.surface_sfx_player = (
-                    self.sounds[f"{ground_type}_surface"].play(volume=0.7, loop=True)
+                    self.sounds[f"{ground_type}_surface"].play(volume=0.7,
+                                                               loop=True)
                 )
             self.previous_ground_type = ground_type
 
     def stop_sfx(self):
+        """Stop playing player sound effects."""
         arcade.stop_sound(self.surface_sfx_player)

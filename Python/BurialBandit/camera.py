@@ -2,13 +2,16 @@ import arcade
 
 MOVE_SPEED = .1
 
+
 class GameCamera(arcade.Camera):
     """
     Controls and configures the built-in camera
     to follow the player and make it more nice.
     """
 
-    def camera_to_player(self, player_sprite: arcade.Sprite, move_speed: float = MOVE_SPEED):
+    def camera_to_player(self,
+                         player_sprite: arcade.Sprite,
+                         move_speed: float = MOVE_SPEED):
         """
         Moves the camera to follow the provided player character.
         """

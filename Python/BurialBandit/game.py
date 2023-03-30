@@ -1,6 +1,6 @@
+from typing import Dict
 import arcade
 import arcade.gl
-from typing import Dict
 
 # Internal modules
 import player
@@ -37,7 +37,8 @@ PLAYER_START_LOCATION = (64, 128)
 # How close you need to be to a checkpoint to activate it.
 CHECKPOINT_TRIGGER_DISTANCE = 64
 
-# The number of pixels distance from the absolute ends of the map that the player will be stopped at.
+# The number of pixels distance from the absolute ends
+# of the map that the player will be stopped at.
 PLAYER_X_STOP_BUFFER = 64
 
 # GUI
@@ -68,10 +69,11 @@ LAYER_NAME_LADDERS = "Ladders"
 LAYER_NAME_CHECKPOINTS = "Checkpoints"
 LAYER_NAME_SOUND = "Sound"
 
+
 class TheGame(arcade.Window):
     """
     The main window class for the Burial Bandit game.
-    
+
     Runs the game after running the `setup()` method
     and calling `arcade.run()`.
     """
@@ -100,7 +102,7 @@ class TheGame(arcade.Window):
     current_level_index: int = 0
 
     # Current checkpoint
-    player_checkpoint_location: arcade.Point = None
+    player_checkpoint_pos: arcade.Point = None
     player_checkpoint_index: int = 0
 
     # Map width in game px
@@ -117,7 +119,8 @@ class TheGame(arcade.Window):
     def __init__(self) -> None:
 
         # Create the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT,
+                         SCREEN_TITLE, fullscreen=True)
 
         arcade.set_background_color(arcade.csscolor.SKY_BLUE)
 
@@ -150,8 +153,12 @@ class TheGame(arcade.Window):
         }
 
         # Load tiled map
-        self.tile_map = arcade.load_tilemap(map_name, MAP_SCALE[self.current_level_index], layer_options)
-        
+        self.tile_map = arcade.load_tilemap(
+            map_name,
+            MAP_SCALE[self.current_level_index],
+            layer_options
+            )
+
         # Convert Tiled map to a arcade scene with SpriteLists for each layer.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
@@ -162,26 +169,37 @@ class TheGame(arcade.Window):
         # Get the player start location from the tiled map file.
         # This is done by just going to the first checkpoint.
         self.player_checkpoint_index = 0
-        self.player_checkpoint_location = self.tile_map.object_lists[LAYER_NAME_CHECKPOINTS][self.player_checkpoint_index].shape
+        self.player_checkpoint_pos = (self.tile_map.object_lists
+                                      [LAYER_NAME_CHECKPOINTS]
+                                      [self.player_checkpoint_index].shape)
 
-        self.map_width_px = self.tile_map.width * self.tile_map.tile_width * MAP_SCALE[self.current_level_index]
+        self.map_width_px = (
+            self.tile_map.width *
+            self.tile_map.tile_width *
+            MAP_SCALE[self.current_level_index])
         # END MAP LOAD
 
         # LOAD SOUNDS
         self.sounds = {
             # Key pickup sound
-            'keys_on_surface': arcade.load_sound('assets/Audio/keys_on_surface_zapsplat.mp3'),
+            'keys_on_surface': arcade.load_sound(
+                'assets/Audio/keys_on_surface_zapsplat.mp3'),
 
             # Looping game soundtrack
-            'through_the_forest': arcade.load_sound('assets/Audio/madmakingmistery_ttf.wav', True),
+            'through_the_forest': arcade.load_sound(
+                'assets/Audio/madmakingmistery_ttf.wav', True),
 
             # These sound effects are played when walking on surfaces.
-            'grass_surface': arcade.load_sound('assets/Audio/footsteps-in-grass-moderate-A-fesliyanstudios.mp3'),
-            'stone_surface': arcade.load_sound('assets/Audio/dress-shoes-on-Concrete-Floor-fast-pace-FesliyanStudios.mp3'),
+            'grass_surface': arcade.load_sound(
+                'assets/Audio/footsteps-in-grass-moderate-A-fesliyanstudios.mp3'),
+            'stone_surface': arcade.load_sound(
+                'assets/Audio/dress-shoes-on-Concrete-Floor-fast-pace-FesliyanStudios.mp3'),
 
             # End sequence
-            'end_intro': arcade.load_sound('assets/Audio/EndSequence_Intro.mp3'),
-            'end_loop': arcade.load_sound('assets/Audio/EndSequence_Looping.mp3')
+            'end_intro': arcade.load_sound(
+                'assets/Audio/EndSequence_Intro.mp3'),
+            'end_loop': arcade.load_sound(
+                'assets/Audio/EndSequence_Looping.mp3')
         }
 
         # Hack to prevent lag spikes when playing
@@ -195,13 +213,15 @@ class TheGame(arcade.Window):
         self.scene.add_sprite_list(LAYER_NAME_PLAYER)
         # Put in front of the BG so the
         # player is not hidden incorrectly.
-        self.scene.add_sprite_list_before(LAYER_NAME_PLAYER, LAYER_NAME_FOREGROUND)
-        
+        self.scene.add_sprite_list_before(LAYER_NAME_PLAYER,
+                                          LAYER_NAME_FOREGROUND)
+
         # Make the player character object and
         # place them at the start of the level.
-        self.player_sprite = player.PlayerCharacter(PLAYER_SCALING, self.sounds)
-        self.player_sprite.center_x = self.player_checkpoint_location[0]
-        self.player_sprite.center_y = self.player_checkpoint_location[1]
+        self.player_sprite = player.PlayerCharacter(PLAYER_SCALING,
+                                                    self.sounds)
+        self.player_sprite.center_x = self.player_checkpoint_pos[0]
+        self.player_sprite.center_y = self.player_checkpoint_pos[1]
         self.scene.add_sprite(LAYER_NAME_PLAYER, self.player_sprite)
 
         # Create the physics engine to let the player move.
@@ -243,8 +263,8 @@ class TheGame(arcade.Window):
         # END GAMEPLAY VALUES
 
         # MUSIC
-        self.looping_song = self.sounds['through_the_forest'].play(.4, loop=True)
-
+        self.looping_song = self.sounds['through_the_forest'].play(.4,
+                                                                   loop=True)
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -269,7 +289,6 @@ class TheGame(arcade.Window):
         # self.play_walking_sfx()
 
         self.update_checkpoints()
-        
 
     def on_draw(self):
         """Render the screen."""
@@ -283,9 +302,7 @@ class TheGame(arcade.Window):
         self.scene[LAYER_NAME_PICKUPS].update_animation()
 
         # Draw with nearest pixel sampling to get that pixelated look.
-        self.scene.draw(filter = arcade.gl.NEAREST)
-
-        # self.scene[LAYER_NAME_PLATFORMS].draw_hit_boxes(arcade.color.GREEN, 3)
+        self.scene.draw(filter=arcade.gl.NEAREST)
 
         # DRAW GUI
         self.gui_camera.use()
@@ -296,7 +313,7 @@ class TheGame(arcade.Window):
             32, self.height - 32,
             arcade.color.ROSE_RED,
             GUI_MAIN_FONT_SIZE,
-            anchor_y = "top"
+            anchor_y="top"
         )
 
         # Log the framerate of the game
@@ -318,8 +335,8 @@ class TheGame(arcade.Window):
                 # Send player back to checkpoint
                 self.player_sprite.change_x = 0
                 self.player_sprite.change_y = 0
-                self.player_sprite.center_x = self.player_checkpoint_location[0]
-                self.player_sprite.center_y = self.player_checkpoint_location[1]
+                self.player_sprite.center_x = self.player_checkpoint_pos[0]
+                self.player_sprite.center_y = self.player_checkpoint_pos[1]
             # If the player is out of lives.
             else:
                 # Restart the level.
@@ -350,7 +367,7 @@ class TheGame(arcade.Window):
         if arcade.check_for_collision_with_list(
             self.player_sprite,
             self.scene[LAYER_NAME_NEXT_LEVEL]
-        ) and self.keys_picked_up >= self.keys_to_pick_up :
+        ) and self.keys_picked_up >= self.keys_to_pick_up:
             self.keys_picked_up = 0
             self.player_sprite.stop_sfx()
             if len(LEVELS)-1 > self.current_level_index:
@@ -364,40 +381,19 @@ class TheGame(arcade.Window):
         one they activated, that will become their new checkpoint.
         """
         checkpoints = self.tile_map.object_lists[LAYER_NAME_CHECKPOINTS]
-        for checkpoint_index, object in enumerate(checkpoints):
-            checkpoint_location: arcade.Shape = object.shape
+        for checkpoint_index, tiled_object in enumerate(checkpoints):
+            checkpoint_location: arcade.Shape = tiled_object.shape
             # Checks the player is both close enough to the checkpoint
             # and has not already obtained a further progressed checkpoint.
             if arcade.get_distance(
                 self.player_sprite.center_x, self.player_sprite.center_y,
                 checkpoint_location[0], checkpoint_location[1]
-            ) <= CHECKPOINT_TRIGGER_DISTANCE and(
-            checkpoint_index > self.player_checkpoint_index):
+            ) <= CHECKPOINT_TRIGGER_DISTANCE and (
+                    checkpoint_index > self.player_checkpoint_index):
                 # Set the checkpoint location to
                 # the newly reached checkpoint.
                 self.player_checkpoint_index = checkpoint_index
-                self.player_checkpoint_location = checkpoint_location
-
-
-    def play_walking_sfx(self):
-        """
-        Play a sound effect corresponding
-        to the surface the player is walking on.
-        """
-        # Find the tiles that the player is standing on.
-        tiles_touching = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene[LAYER_NAME_SOUND]
-        )
-
-        ground_type: str = None
-        for tile in tiles_touching:
-            ground_type = tile.properties[PROPERTY_GROUND_TYPE]
-
-        if (self.player_sprite.change_x != 0 and ground_type != None
-            and ground_type != self.previous_ground_type):
-            if self.surface_sfx_player != None:
-                arcade.stop_sound(self.surface_sfx_player)
-            self.surface_sfx_player = self.sounds[f"{ground_type}_surface"].play(loop=True)
+                self.player_checkpoint_pos = checkpoint_location
 
     def stop_player_at_ends(self):
         """
@@ -406,14 +402,16 @@ class TheGame(arcade.Window):
         """
         # Where the player will be on the next
         # physics update if the change goes ahead.
-        anticipated_position = self.player_sprite.center_x + self.player_sprite.change_x
+        anticipated_position = (self.player_sprite.center_x +
+                                self.player_sprite.change_x)
         # Stop the player at the left side of the map.
-        if self.inputs.left_pressed and anticipated_position <= PLAYER_X_STOP_BUFFER:
+        if (self.inputs.left_pressed and
+                anticipated_position <= PLAYER_X_STOP_BUFFER):
             self.player_sprite.change_x = 0
         # Stop the player on the right side of the map.
-        elif self.inputs.right_pressed and anticipated_position >= self.map_width_px - PLAYER_X_STOP_BUFFER:
+        elif (self.inputs.right_pressed and anticipated_position >=
+              self.map_width_px - PLAYER_X_STOP_BUFFER):
             self.player_sprite.change_x = 0
-        
 
     def process_keychange(self):
         """
