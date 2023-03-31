@@ -1,3 +1,7 @@
+"""
+Data structure to hold the user's inputs.
+"""
+
 from dataclasses import dataclass
 
 

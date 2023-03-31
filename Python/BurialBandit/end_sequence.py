@@ -1,3 +1,8 @@
+"""
+Handles the ending action sequence for Burial Bandit.
+"""
+
+
 from typing import Dict
 import arcade
 from pyglet.math import Vec2

@@ -1,7 +1,12 @@
-import arcade
+"""
+The player character for Burial Bandit
+including animations and sound effects.
+"""
+
 from typing import List, Dict
 from os.path import join
 from math import floor
+import arcade
 from pyglet.media import Player
 
 # ANIMATION_FRAMERATE = 8

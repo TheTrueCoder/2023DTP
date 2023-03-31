@@ -1,3 +1,7 @@
+"""
+The camera system for Burial Bandit.
+"""
+
 import arcade
 
 MOVE_SPEED = .1
