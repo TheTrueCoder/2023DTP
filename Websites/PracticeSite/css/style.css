@@ -1,0 +1,56 @@
+/* Define global colours */
+:root {
+    --light-tone: #f1faee;
+    --dark-tone: #1d3557;
+    --primary-tone: #457b9d;
+    --accent-tone: #e63946;
+
+    --display-font: 'Georgia', serif;
+    --main-font: 'Arial', sans-serif;
+
+    --inline-padding: 20px;
+}
+
+body {
+    margin: 0;
+}
+
+/* Header */
+header {
+    background-color: var(--primary-tone);
+    color: var(--light-tone);
+    padding: 0 var(--inline-padding);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header h1 {
+    font-size: 50px;
+    font-family: var(--display-font);
+    font-weight: normal;
+    margin: 0;
+}
+
+header nav {
+    /* Placement */
+    width: 35vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header nav a {
+    /* Text */
+    font-family: var(--main-font);
+    text-decoration: none;
+    color: var(--light-tone);
+    font-size: 25px;
+    transition: color 0.2s ease-in-out;
+}
+
+header nav a:hover {
+    color: var(--accent-tone);
+}
