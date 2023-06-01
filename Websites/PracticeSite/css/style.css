@@ -1,9 +1,11 @@
 /* Define global colours */
 :root {
-    --light-tone: #f1faee;
-    --dark-tone: #1d3557;
-    --primary-tone: #457b9d;
-    --accent-tone: #e63946;
+    /* https://coolors.co/palette/335c67-fff3b0-e09f3e-9e2a2b-540b0e */
+    --light-tone: #e09f3e;
+    --dark-tone: #335c67;
+    --mid-dark-tone: hsl(193, 34%, 40%);
+    --primary-tone: #540B0E;
+    --accent-tone: #FFF3B0;
 
     --display-font: 'Georgia', serif;
     --main-font: 'Arial', sans-serif;
@@ -13,6 +15,18 @@
 
 body {
     margin: 0;
+    font-family: var(--main-font);
+    background-color: var(--dark-tone);
+}
+
+h1, h2 {
+    font-family: var(--display-font);
+}
+
+h1 {
+    font-size: 30px;
+    margin: 15px 0;
+    color: var(--accent-tone);
 }
 
 /* Header */
@@ -47,10 +61,44 @@ header nav a {
     font-family: var(--main-font);
     text-decoration: none;
     color: var(--light-tone);
-    font-size: 25px;
+    font-size: 30px;
     transition: color 0.2s ease-in-out;
 }
 
 header nav a:hover {
     color: var(--accent-tone);
+}
+
+.active-page {
+    color: var(--accent-tone);
+}
+
+/* Articles list */
+
+.articles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Article element */
+
+article {
+    background-color: var(--mid-dark-tone);
+    padding: 15px;
+    margin: 15px;
+    display: inline-block;
+    border-radius: 15px;
+    width: 700px;
+}
+
+article img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+article h1 {
+    /* color: var(--dark-tone); */
 }
