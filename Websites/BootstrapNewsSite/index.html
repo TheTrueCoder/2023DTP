@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg text-bg-secondary rounded-bottom">
+    <nav class="navbar navbar-expand-md text-bg-primary rounded-bottom">
         <div class="container-fluid">
             <a class="navbar-brand h1 fs-1 text-light" href="#">Tech News.</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -20,14 +20,14 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item">
                         <a class="nav-link text-light link-primary active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light link-primary" href="#">Link</a>
                     </li>
-                    <li class="nav-link text-light link-primary dropdown">
+                    <li class="nav-link dropdown text-light link-primary">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Dropdown
@@ -45,16 +45,46 @@
                         <a class="nav-link disabled">Disabled</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
+                <!-- <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                </form> -->
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="container"
+    <div class="container-fluid">
+        <div class="row">
+            <main class="col col-12 col-lg-8 p-0">
+                <img class="img-fluid" src="img\ue5-header-2.png" alt="Fantasy female character looking over a broken landscape.">
+                <h1 class="mx-3">Unreal news just in!</h1>
+            </main>
+            <aside class="col col-md-12 d-none d-md-block col-lg-4">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio, aspernatur, dolore aut deserunt ratione similique voluptatibus magni sit nulla saepe aliquam veritatis, facere nesciunt tenetur dolorum beatae. Tempore enim deserunt veritatis molestias aut, provident voluptatum rerum est assumenda optio excepturi alias libero voluptatem laudantium dignissimos harum, placeat voluptates architecto minus nam, veniam laborum? Reiciendis saepe error, maiores sit tempora labore similique, illo laboriosam eveniet, consequatur neque. Magni, nisi eaque?
+            </aside>
+        </div>
+        <div class="row p-1 overflow-hidden">
+            <div class="col col-12 col-md-6 col-lg-4 text-bg-primary rounded">
+                Content.
+            </div>
+            <div class="col col-12 col-md-6 col-lg-4 text-bg-primary rounded">
+                Content content.
+            </div>
+            <div class="col col-12 col-md-6 col-lg-4 text-bg-primary rounded">
+                Content content content.
+            </div>
+            <div class="col col-12 col-md-6 col-lg-4 text-bg-primary rounded">
+                More content content content.
+            </div>
+            <div class="col col-12 col-md-6 col-lg-4 text-bg-primary rounded">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur incidunt totam autem, consequatur excepturi ducimus quibusdam repellendus beatae dolor praesentium assumenda esse inventore odit. Sed iusto a consequatur aut numquam?
+            </div>
+            <div class="col col-12 col-md-6 col-lg-4 text-bg-primary rounded">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur incidunt totam autem, consequatur excepturi ducimus quibusdam repellendus beatae dolor praesentium assumenda esse inventore odit. Sed iusto a consequatur aut numquam?
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
