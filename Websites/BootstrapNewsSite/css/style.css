@@ -1,5 +1,5 @@
 main {
-    background-color: orange;
+    /* background-color: orange; */
 }
 
 aside {
@@ -29,4 +29,12 @@ aside {
     background: #cae665;
     box-shadow: inset 10px 10px 20px #acc456,
         inset -10px -10px 20px #e8ff74;
+}
+
+.carousel-caption * {
+    /* color: white; */
+}
+
+#carouselMain img {
+    height: 500px;
 }
