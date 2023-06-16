@@ -5,3 +5,28 @@ main {
 aside {
     background-color: pink;
 }
+
+.navbar {
+    --lg-navbar-color: red;
+}
+
+.button {
+    border-radius: 16px;
+    background: #cae665;
+    box-shadow: 10px 10px 20px #acc456,
+        -10px -10px 20px #e8ff74;
+}
+
+.button:hover {
+    border-radius: 16px;
+    background: linear-gradient(145deg, #b6cf5b, #d8f66c);
+    box-shadow: 10px 10px 20px #acc456,
+        -10px -10px 20px #e8ff74;
+}
+
+.button:active {
+    border-radius: 16px;
+    background: #cae665;
+    box-shadow: inset 10px 10px 20px #acc456,
+        inset -10px -10px 20px #e8ff74;
+}
