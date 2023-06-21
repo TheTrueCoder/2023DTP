@@ -1,7 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap');
 
 [data-bs-theme=dark] {
-    color-scheme: dark;
+    --bs-body-color: #ffffff;
+    --bs-body-color-rgb: 255, 255, 255;
+    --bs-body-bg: #212529;
+    --bs-body-bg-rgb: 33, 37, 41;
+    /* --bs-emphasis-color: #e98f00;
+    --bs-emphasis-color-rgb: 233, 143, 0; */
+    
+
+    /* color-scheme: dark;
     --bs-body-color: #adb5bd;
     --bs-body-color-rgb: 173, 181, 189;
     --bs-body-bg: #212529;
@@ -16,54 +24,57 @@
     --bs-tertiary-color-rgb: 173, 181, 189;
     --bs-tertiary-bg: #2b3035;
     --bs-tertiary-bg-rgb: 43, 48, 53;
-
+    --bs-primary-text-emphasis: #6ea8fe;
+    --bs-secondary-text-emphasis: #a7acb1;
+    --bs-success-text-emphasis: #75b798;
+    --bs-info-text-emphasis: #6edff6;
+    --bs-warning-text-emphasis: #ffda6a;
+    --bs-danger-text-emphasis: #ea868f;
+    --bs-light-text-emphasis: #f8f9fa;
+    --bs-dark-text-emphasis: #dee2e6;
+    --bs-primary-bg-subtle: #031633;
+    --bs-secondary-bg-subtle: #161719;
+    --bs-success-bg-subtle: #051b11;
+    --bs-info-bg-subtle: #032830;
+    --bs-warning-bg-subtle: #332701;
+    --bs-danger-bg-subtle: #2c0b0e;
+    --bs-light-bg-subtle: #343a40;
+    --bs-dark-bg-subtle: #1a1d20;
+    --bs-primary-border-subtle: #084298;
+    --bs-secondary-border-subtle: #41464b;
+    --bs-success-border-subtle: #0f5132;
+    --bs-info-border-subtle: #087990;
+    --bs-warning-border-subtle: #997404;
+    --bs-danger-border-subtle: #842029;
+    --bs-light-border-subtle: #495057;
+    --bs-dark-border-subtle: #343a40;
+    --bs-heading-color: inherit;
+    --bs-link-color: #6ea8fe;
+    --bs-link-hover-color: #8bb9fe;
+    --bs-link-color-rgb: 110, 168, 254;
+    --bs-link-hover-color-rgb: 139, 185, 254;
+    --bs-code-color: #e685b5;
+    --bs-border-color: #495057;
+    --bs-border-color-translucent: rgba(255, 255, 255, 0.15);
+    --bs-form-valid-color: #75b798;
+    --bs-form-valid-border-color: #75b798;
+    --bs-form-invalid-color: #ea868f;
+    --bs-form-invalid-border-color: #ea868f; */
 }
 
 h1 {
     font-family: 'Reem Kufi', sans-serif;
 }
 
-main {
-    /* background-color: orange; */
-}
-
-aside {
-    background-color: pink;
-}
-
 .navbar {
     --lg-navbar-color: red;
 }
 
-.button {
-    border-radius: 16px;
-    background: #cae665;
-    box-shadow: 10px 10px 20px #acc456,
-        -10px -10px 20px #e8ff74;
-}
-
-.button:hover {
-    border-radius: 16px;
-    background: linear-gradient(145deg, #b6cf5b, #d8f66c);
-    box-shadow: 10px 10px 20px #acc456,
-        -10px -10px 20px #e8ff74;
-}
-
-.button:active {
-    border-radius: 16px;
-    background: #cae665;
-    box-shadow: inset 10px 10px 20px #acc456,
-        inset -10px -10px 20px #e8ff74;
-}
-
-.carousel-caption * {
-    /* color: white; */
-}
-
-#carouselMain img {
-    height: 500px;
-}
-
+#carouselMain img,
 #carouselMain .carousel-item {
-    height: 500px;
+    height: 30rem;
+}
+
+.lg-limit {
+    max-width: 992px;
 }
