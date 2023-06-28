@@ -1,0 +1,5 @@
+:root,
+[data-bs-theme=light] {
+    --bs-primary: #d498ca;
+    --bs-primary-rgb: 212, 152, 202;
+}

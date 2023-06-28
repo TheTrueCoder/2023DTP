@@ -1,24 +1,23 @@
 <script lang="ts">
-    import { AppShell, Navbar, Header, Aside, Footer, ShellSection } from '@svelteuidev/core';
-    import { Container } from '@svelteuidev/core';
+
 </script>
 
-<svelte:body >
+<div class="container">
+    <div class="row">
+        <div class="col col-4 card">
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p>Quote</p>
+              <footer class="blockquote-footer">Footer <cite title="Source title">Source title</cite></footer>
+            </blockquote>
+          </div>
+        </div>
+        <div class="col col-4 bloc">Hello</div>
+    </div>
+</div>
 
-</svelte:body>
-
-<!-- <AppShell>
-    <Navbar>
-        <h1>Hello Fam!</h1>
-    </Navbar>
-    <Aside>
-        Hello
-    </Aside>
-    <Footer>
-        The bottom.
-    </Footer>
-</AppShell> -->
-
-<Container override={{bc: 'Orange'}}>
-    Hello peeps
-</Container>
+<style>
+    :global(body) {
+        background-color: grey;
+    }
+</style>
